@@ -1,0 +1,35 @@
+# Exclude large media files (GitHub has strict limits)
+*.mp4
+*.mov
+*.webm
+*.avi
+*.mkv
+
+# Exclude python environments and tools
+tools/
+uv_python/
+__pycache__/
+*.pyc
+*.log
+.env
+.system_generated/
+
+# Exclude internal scrapers and working files from web deployment
+*.xlsx
+*.bat
+*.ps1
+IM 2026 Analyisis/
+MP & PDP/
+ig_reel_collector/
+skuscout/
+app.py
+pdp_engine.py
+pdp_intelligence.py
+share_online.py
+gso_master_autofill.py
+skuscout_*.py
+test_*.py
+LIVE_WEBSITE_LINK.txt
+Sunscreen_Comparison_Board*.html
+facewash_canvas_data.js
+facewash_inventory.json
