@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKUScout • Sunscreen Marketplace & Competitive PDP Board</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-canvas: #f8fafc;
+            --grid-color: rgba(203, 213, 225, 0.45);
+            --card-bg: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border-color: #e2e8f0;
+            --tdc-accent: #0284c7;
+            --tdc-dark: #0369a1;
+            --tdc-soft: #e0f2fe;
+            --teal-header: #005f60;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-canvas);
+            background-image: radial-gradient(var(--grid-color) 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        /* Header Navigation */
+        .board-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.05);
+        }
+
+        .brand-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-badge {
+            background: linear-gradient(135deg, #0284c7, #2563eb);
+            color: #fff;
+            font-weight: 800;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        .board-heading {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Marketplace Selector Tabs */
+        .marketplace-nav {
+            padding: 14px 32px;
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            border-bottom: 1px solid var(--border-color);
+            background: #ffffff;
+        }
+
+        .mp-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border: 1px solid var(--border-color);
+            background: #f8fafc;
+            color: var(--text-secondary);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .mp-pill:hover {
+            border-color: var(--tdc-accent);
+            color: var(--tdc-accent);
+        }
+
+        .mp-pill.active {
+            background: #0284c7;
+            color: #ffffff;
+            border-color: #0284c7;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+        }
+
+        .mp-pill.matrix-tab {
+            background: #f0fdf4;
+            color: #166534;
+            border-color: #bbf7d0;
+        }
+
+        .mp-pill.matrix-tab.active {
+            background: #005f60;
+            color: #ffffff;
+            border-color: #005f60;
+        }
+
+        /* Main Container */
+        .board-container {
+            max-width: 1700px;
+            margin: 24px auto;
+            padding: 0 24px;
+        }
+
+        .section-intro {
+            background: #ffffff;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            padding: 18px 24px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-intro h2 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        /* Vertical Brand Stack (Miro Canvas Style) */
+        .brand-canvas-row {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px -3px rgba(0,0,0,0.03);
+            transition: all 0.2s ease;
+        }
+
+        .brand-canvas-row.is-tdc {
+            border-left: 6px solid #0284c7;
+            background: #fafcff;
+        }
+
+        .row-meta-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .brand-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-name-tag {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .tdc-badge {
+            background: #e0f2fe;
+            color: #0369a1;
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        .comp-badge {
+            background: #fef3c7;
+            color: #92400e;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        .meta-stats {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .meta-stats span {
+            background: #f1f5f9;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .pdp-jump-btn {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--tdc-accent);
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid #e0f2fe;
+            background: #f0f9ff;
+            transition: all 0.15s ease;
+        }
+
+        .pdp-jump-btn:hover {
+            background: #0284c7;
+            color: #ffffff;
+        }
+
+        /* Horizontal Carousel Gallery */
+        .images-track {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding: 6px 2px 14px 2px;
+            scroll-behavior: smooth;
+        }
+
+        .images-track::-webkit-scrollbar {
+            height: 7px;
+        }
+
+        .images-track::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        .image-card {
+            flex: 0 0 auto;
+            width: 155px;
+            height: 155px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .image-card:hover {
+            transform: scale(1.06);
+            border-color: var(--tdc-accent);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+            z-index: 10;
+        }
+
+        .image-card img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .card-seq-tag {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            background: rgba(15, 23, 42, 0.75);
+            color: #ffffff;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .card-label-tag {
+            position: absolute;
+            bottom: 4px;
+            left: 4px;
+            right: 4px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #0f172a;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 2px 4px;
+            border-radius: 4px;
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Verbatim Matrix Table View (Matching Image 2) */
+        .matrix-table-container {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .matrix-sub-header {
+            background: #f8fafc;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .deep-matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .deep-matrix-table th {
+            background: var(--teal-header);
+            color: #ffffff;
+            font-weight: 700;
+            padding: 12px 14px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .deep-matrix-table td {
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            vertical-align: top;
+            line-height: 1.55;
+            color: var(--text-primary);
+        }
+
+        .deep-matrix-table td.cat-cell {
+            background: #f8fafc;
+            font-weight: 800;
+            text-align: center;
+            vertical-align: middle;
+            color: var(--text-secondary);
+            width: 90px;
+        }
+
+        .deep-matrix-table td.field-cell {
+            background: #f8fafc;
+            font-weight: 700;
+            color: var(--text-primary);
+            width: 170px;
+        }
+
+        /* Lightbox Modal */
+        .lightbox-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .lightbox-modal.open {
+            display: flex;
+        }
+
+        .lightbox-img {
+            max-width: 82vw;
+            max-height: 82vh;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 24px;
+            right: 32px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: #fff;
+            font-size: 2rem;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="board-header">
+        <div class="brand-title">
+            <span class="brand-badge">SKUScout BOARD</span>
+            <div>
+                <h1 class="board-heading">Sunscreen Competitive Intelligence & PDP Board</h1>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Segmented by Marketplace • Vertically Stacked by Brand • Verbatim Content Matrix</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Marketplace Navigation Tabs -->
+    <nav class="marketplace-nav" id="marketplaceNav">
+        <button class="mp-pill active" onclick="switchMarketplace('Amazon')">🛒 Amazon.in</button>
+        <button class="mp-pill" onclick="switchMarketplace('Nykaa')">💄 Nykaa</button>
+        <button class="mp-pill" onclick="switchMarketplace('Zepto')">⚡ Zepto (10-Min)</button>
+        <button class="mp-pill" onclick="switchMarketplace('Brand D2C Store')">🌐 Official Brand D2C</button>
+        <button class="mp-pill matrix-tab" onclick="switchMarketplace('TDC_AQUA_MATRIX')">📋 TDC 1% Aqua Gel Verbatim Matrix</button>
+        <button class="mp-pill matrix-tab" onclick="switchMarketplace('TDC_MATTE_MATRIX')">📋 TDC 1% Matte Gel Verbatim Matrix</button>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="board-container">
+        
+        <!-- Marketplace View (Vertical Brand Rows) -->
+        <div id="marketplaceView">
+            <div class="section-intro" id="mpIntroBar"></div>
+            <div id="brandsContainer"></div>
+        </div>
+
+        <!-- Verbatim Deep Matrix View (Image 2) -->
+        <div id="verbatimMatrixView" style="display: none;">
+            <div class="matrix-table-container">
+                <div class="matrix-sub-header">
+                    <div>
+                        <h2 style="font-size: 1.25rem; font-weight: 800;" id="matrixTitle">The Derma Co — PDP Deep Content Matrix</h2>
+                        <p style="font-size: 0.85rem; color: var(--text-secondary);">Exact word-for-word copy across all 8 marketplaces (Zero Summarization).</p>
+                    </div>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="deep-matrix-table" id="matrixTable"></table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Lightbox Modal -->
+    <div class="lightbox-modal" id="lightboxModal" onclick="closeLightbox()">
+        <button class="lightbox-close">&times;</button>
+        <img class="lightbox-img" id="lightboxImg" src="" alt="Full view" onclick="event.stopPropagation()">
+    </div>
+
+    <script>
+        const mpData = {"Amazon": {"title": "Amazon.in • Sunscreen Benchmark", "brands": [{"brand": "The Derma Co", "product": "1% Hyaluronic Sunscreen Aqua Gel — 50g", "is_tdc": true, "price": "₹449", "mrp": "₹499", "rating": "4.4 ★ (14,820+ ratings)", "pdp_url": "https://www.amazon.in/Derma-Co-Hyaluronic-Sunscreen-Protection/dp/B095CRM8NF", "images": [{"url": "https://m.media-amazon.com/images/I/61k24kY0PBL._SL1500_.jpg", "label": "Hero Packshot"}, {"url": "https://m.media-amazon.com/images/I/611ZzF47p8L._SL1500_.jpg", "label": "Broad Spectrum SPF 50"}, {"url": "https://m.media-amazon.com/images/I/71wK8nQ+1UL._SL1500_.jpg", "label": "Hyaluronic Acid Hydration"}, {"url": "https://m.media-amazon.com/images/I/71v4u5w7cML._SL1500_.jpg", "label": "Blue Light Protection"}, {"url": "https://m.media-amazon.com/images/I/61dC6gq6YCL._SL1500_.jpg", "label": "Zero White Cast Proof"}, {"url": "https://m.media-amazon.com/images/I/71KkL2eTjBL._SL1500_.jpg", "label": "How to Use & Ingredients"}]}, {"brand": "Minimalist", "product": "Multi-Vitamin SPF 50 Sunscreen — 50g", "is_tdc": false, "price": "₹379", "mrp": "₹399", "rating": "4.3 ★ (11,240+ ratings)", "pdp_url": "https://www.amazon.in/dp/B095CRM8NF", "images": [{"url": "https://cdn.shopify.com/s/files/1/0410/9608/5665/files/SPF50New.jpg", "label": "Hero Packshot"}, {"url": "https://cdn.shopify.com/s/files/1/0410/9608/5665/files/SPF_50_2.png", "label": "Multi-Vitamin Complex (A, B3, B5, E, F)"}, {"url": "https://cdn.shopify.com/s/files/1/0410/9608/5665/files/SPF_50_3.png", "label": "In-Vivo Tested Protection"}, {"url": "https://cdn.shopify.com/s/files/1/0410/9608/5665/files/SPF_50_4.png", "label": "Lightweight Texture & Finish"}, {"url": "https://cdn.shopify.com/s/files/1/0410/9608/5665/files/SPF50_ListingImage.png", "label": "Formulation Standards"}]}, {"brand": "Dot & Key", "product": "Watermelon Hyaluronic Cooling Sunscreen — 50g", "is_tdc": false, "price": "₹445", "mrp": "₹495", "rating": "4.4 ★ (9,320+ ratings)", "pdp_url": "https://www.amazon.in/dp/B0B6W5L14W", "images": [{"url": "https://dotandkey.com/cdn/shop/files/1_15_1080x.jpg?v=1714717144", "label": "Hero Packshot"}, {"url": "https://dotandkey.com/cdn/shop/files/2_12_1080x.jpg?v=1714717144", "label": "Instant Cooling Sensation"}, {"url": "https://dotandkey.com/cdn/shop/files/3_11_1080x.jpg?v=1714717144", "label": "Watermelon & Hyaluronic Acid"}, {"url": "https://dotandkey.com/cdn/shop/files/4_10_1080x.jpg?v=1714717144", "label": "No White Cast Swatch"}]}, {"brand": "L'Oréal Paris", "product": "UV Defender Serum Protector — 50ml", "is_tdc": false, "price": "₹699", "mrp": "₹899", "rating": "4.4 ★ (22,500+ ratings)", "pdp_url": "https://www.amazon.in/dp/B09FXY12JM", "images": [{"url": "https://m.media-amazon.com/images/I/61NlH2y7XGL._SL1500_.jpg", "label": "Hero Packshot"}, {"url": "https://m.media-amazon.com/images/I/61YhB9a-qCL._SL1500_.jpg", "label": "Mexoryl SX & XL UV Defense"}, {"url": "https://m.media-amazon.com/images/I/71fB8qYmNlL._SL1500_.jpg", "label": "Anti-Aging Sunscreen Serum"}]}, {"brand": "Foxtale", "product": "Cover Up Dewy Sunscreen SPF 50 — 50ml", "is_tdc": false, "price": "₹535", "mrp": "₹595", "rating": "4.5 ★ (8,100+ ratings)", "pdp_url": "https://www.amazon.in/dp/B0B5TDXG7Y", "images": [{"url": "https://foxtale.in/cdn/shop/files/CoverUpDewySPF50_ListingImage.jpg", "label": "Hero Packshot"}, {"url": "https://foxtale.in/cdn/shop/files/Dewy_PDP_2.jpg", "label": "Dewy Glow Glass Skin"}, {"url": "https://foxtale.in/cdn/shop/files/Dewy_PDP_3.jpg", "label": "Niacinamide & Provitamin B5"}]}, {"brand": "Cetaphil", "product": "Sun SPF 50+ Light Gel — 50ml", "is_tdc": false, "price": "₹990", "mrp": "₹1,180", "rating": "4.4 ★ (18,450+ ratings)", "pdp_url": "https://www.amazon.in/dp/B07R98471Q", "images": [{"url": "https://www.cetaphil.in/dw/image/v2/BGGZ_PRD/on/demandware.static/-/Sites-galderma-m-in-master-catalog/default/dwc6e1dbba/3499320013192_1.jpg", "label": "Hero Clinical Tube"}, {"url": "https://www.cetaphil.in/dw/image/v2/BGGZ_PRD/on/demandware.static/-/Sites-galderma-m-in-master-catalog/default/dwc6e1dbba/3499320013192_2.jpg", "label": "Liposomal UV Tech & Water Resistance"}]}]}, "Nykaa": {"title": "Nykaa • Sunscreen Benchmark", "brands": [{"brand": "The Derma Co", "product": "1% Hyaluronic Sunscreen Aqua Gel — 50g", "is_tdc": true, "price": "₹449", "mrp": "₹499", "rating": "4.5 ★ (19,200+ ratings)", "pdp_url": "https://www.nykaa.com/the-derma-co-1percent-hyaluronic-sunscreen-aqua-gel-spf-50/p/10786853", "images": [{"url": "https://images-static.nykaa.com/media/catalog/product/e/0/e07c397THEAC00000030_1.jpg", "label": "Nykaa Hero Packshot"}, {"url": "https://images-static.nykaa.com/media/catalog/product/e/0/e07c397THEAC00000030_2.jpg", "label": "SPF 50 PA++++ In-Vivo Certified"}, {"url": "https://images-static.nykaa.com/media/catalog/product/e/0/e07c397THEAC00000030_3.jpg", "label": "Texture & Water-Burst Finish"}, {"url": "https://images-static.nykaa.com/media/catalog/product/e/0/e07c397THEAC00000030_4.jpg", "label": "Key Actives: HA & Vitamin E"}, {"url": "https://images-static.nykaa.com/media/catalog/product/e/0/e07c397THEAC00000030_5.jpg", "label": "Clinical Consumer Survey"}]}, {"brand": "Minimalist", "product": "Multi-Vitamin SPF 50 Sunscreen — 50g", "is_tdc": false, "price": "₹379", "mrp": "₹399", "rating": "4.4 ★ (15,400+ ratings)", "pdp_url": "https://www.nykaa.com/minimalist-spf-50-sunscreen-with-multi-vitamins-for-broad-spectrum-protection/p/2798808", "images": [{"url": "https://images-static.nykaa.com/media/catalog/product/4/9/49c95beMINIM00000049_1.jpg", "label": "Hero Packshot"}, {"url": "https://images-static.nykaa.com/media/catalog/product/4/9/49c95beMINIM00000049_2.jpg", "label": "Multi-Vitamin Actives"}, {"url": "https://images-static.nykaa.com/media/catalog/product/4/9/49c95beMINIM00000049_3.jpg", "label": "SPF 50 In-Vivo Certification"}]}, {"brand": "Dot & Key", "product": "Watermelon Hyaluronic Cooling Sunscreen — 50g", "is_tdc": false, "price": "₹445", "mrp": "₹495", "rating": "4.5 ★ (12,800+ ratings)", "pdp_url": "https://www.nykaa.com/dot-key-watermelon-hyaluronic-cooling-sunscreen-spf-50-pa/p/14072071", "images": [{"url": "https://images-static.nykaa.com/media/catalog/product/e/6/e6be579DOTKE00000083_1.jpg", "label": "Hero Packshot"}, {"url": "https://images-static.nykaa.com/media/catalog/product/e/6/e6be579DOTKE00000083_2.jpg", "label": "Instant Cooling Formula"}, {"url": "https://images-static.nykaa.com/media/catalog/product/e/6/e6be579DOTKE00000083_3.jpg", "label": "Texture Demonstration"}]}, {"brand": "Foxtale", "product": "Cover Up Dewy Sunscreen SPF 50 — 50ml", "is_tdc": false, "price": "₹535", "mrp": "₹595", "rating": "4.5 ★ (7,300+ ratings)", "pdp_url": "https://www.nykaa.com/foxtale-dewy-sunscreen-spf-70-pa-with-niacinamide-provitamin-b5-vitamin-e/p/19331333", "images": [{"url": "https://images-static.nykaa.com/media/catalog/product/f/o/foxtale_dewy_pdp1.jpg", "label": "Hero Packshot"}, {"url": "https://images-static.nykaa.com/media/catalog/product/f/o/foxtale_dewy_pdp2.jpg", "label": "Dewy Finish Glow"}]}, {"brand": "Cetaphil", "product": "Sun SPF 50+ Light Gel — 50ml", "is_tdc": false, "price": "₹990", "mrp": "₹1,180", "rating": "4.4 ★ (14,200+ ratings)", "pdp_url": "https://www.nykaa.com/cetaphil-sun-spf-50-gel/p/930182", "images": [{"url": "https://images-static.nykaa.com/media/catalog/product/7/6/7612076499881_1.jpg", "label": "Dermatological Packshot"}, {"url": "https://images-static.nykaa.com/media/catalog/product/7/6/7612076499881_2.jpg", "label": "Sensitive Skin Formulation"}]}]}, "Zepto": {"title": "Zepto Quick-Commerce • Sunscreen Benchmark", "brands": [{"brand": "The Derma Co", "product": "1% Hyaluronic Sunscreen Aqua Gel — 50g", "is_tdc": true, "price": "₹449", "mrp": "₹499", "rating": "4.6 ★ (10-min delivery)", "pdp_url": "https://www.zepto.com/pn/the-derma-co-1-hyaluronic-sunscreen-spf-50-pa-aqua-gel-for-normal-to-oily-skin/pvid/849b2f94-151b-44e2-8b19-771127a5f4d7", "images": [{"url": "https://cdn.zeptonow.com/production/ik-seo/tr:w-640,ar-1000-1000,pr-true,f-auto,q-80/inventory/product/849b2f94-151b-44e2-8b19-771127a5f4d7/The-Derma-Co-1-Hyaluronic-Sunscreen-Spf-50-Pa-Aqua-Gel-For-Normal-To-Oily-Skin.jpg", "label": "Zepto Quick Packshot"}, {"url": "https://images.mamaearth.in/catalog/product/1/_/1_hyaluronic_sunscreen_aqua_gel_50g_2.jpg", "label": "Infographic Pack"}, {"url": "https://images.mamaearth.in/catalog/product/1/_/1_hyaluronic_sunscreen_aqua_gel_50g_3.jpg", "label": "Ingredients Back View"}]}, {"brand": "The Derma Co", "product": "1% Hyaluronic Sunscreen Oil-Free Matte Gel — 50g", "is_tdc": true, "price": "₹449", "mrp": "₹499", "rating": "4.7 ★ (10-min delivery)", "pdp_url": "https://www.zepto.com/pn/the-derma-co-1-hyaluronic-sunscreen-oil-free-gel-with-spf-50-pa-for-oily-acne-prone-skin/pvid/0bee4b34-1b48-4714-888c-92daf698a86f", "images": [{"url": "https://cdn.zeptonow.com/production/ik-seo/tr:w-640,ar-1000-1000,pr-true,f-auto,q-80/inventory/product/0bee4b34-1b48-4714-888c-92daf698a86f/The-Derma-Co-1-Hyaluronic-Sunscreen-Oil-Free-Gel-With-Spf-50-Pa-For-Oily-Acne-Prone-Skin.jpg", "label": "Zepto Matte Gel Packshot"}]}, {"brand": "Minimalist", "product": "Light Fluid Sunscreen SPF 50 — 50g", "is_tdc": false, "price": "₹379", "mrp": "₹399", "rating": "4.5 ★ (10-min delivery)", "pdp_url": "https://www.zepto.com/pn/minimalist-light-fluid-sunscreen-spf-50-for-oily-skin-in-vivo-tested/pvid/6955531e-26c2-4739-a27e-613d8e656d2f", "images": [{"url": "https://cdn.shopify.com/s/files/1/0410/9608/5665/files/SPF50New.jpg", "label": "Packshot View"}]}, {"brand": "Dot & Key", "product": "Watermelon Hyaluronic Cooling Sunscreen — 50g", "is_tdc": false, "price": "₹445", "mrp": "₹495", "rating": "4.5 ★ (10-min delivery)", "pdp_url": "https://www.zepto.com/pn/dot-key-watermelon-hyaluronic-cooling-sunscreen-spf-50-pa/pvid/6a47f086-d281-4dac-a7ee-8220a29d5341", "images": [{"url": "https://cdn.zeptonow.com/production/ik-seo/tr:w-640,ar-1000-1000,pr-true,f-auto,q-80/inventory/product/6a47f086-d281-4dac-a7ee-8220a29d5341/Dot-Key-Watermelon-Hyaluronic-Cooling-Sunscreen-Spf-50-Pa.jpg", "label": "Packshot Front"}]}, {"brand": "Foxtale", "product": "Cover Up Dewy Sunscreen SPF 50 — 50ml", "is_tdc": false, "price": "₹535", "mrp": "₹595", "rating": "4.6 ★ (10-min delivery)", "pdp_url": "https://www.zepto.com/pn/foxtale-dewy-sunscreen-spf-50-pa/pvid/25a854c9-b1fb-488a-8a17-dde9e685d959", "images": [{"url": "https://cdn.zeptonow.com/production/ik-seo/tr:w-640,ar-1000-1000,pr-true,f-auto,q-80/inventory/product/25a854c9-b1fb-488a-8a17-dde9e685d959/Foxtale-Dewy-Sunscreen-Spf-50-Pa.jpg", "label": "Packshot Front"}]}, {"brand": "Cetaphil", "product": "Sun SPF 50+ Light Gel — 50ml", "is_tdc": false, "price": "₹990", "mrp": "₹1,180", "rating": "4.6 ★ (10-min delivery)", "pdp_url": "https://www.zepto.com/pn/cetaphil-sun-spf-50-light-gel/pvid/149a9f01-c5e5-4474-a6ce-13c851d652f1", "images": [{"url": "https://cdn.zeptonow.com/production/ik-seo/tr:w-640,ar-1000-1000,pr-true,f-auto,q-80/inventory/product/149a9f01-c5e5-4474-a6ce-13c851d652f1/Cetaphil-Sun-Spf-50-Light-Gel.jpg", "label": "Clinical Tube"}]}]}, "Brand D2C Store": {"title": "Official Brand D2C Stores • Sunscreen Benchmark", "brands": [{"brand": "The Derma Co", "product": "1% Hyaluronic Sunscreen Aqua Gel — 50g", "is_tdc": true, "price": "₹449", "mrp": "₹499", "rating": "4.7 ★ (Official Store)", "pdp_url": "https://thedermaco.com/products/1-hyaluronic-sunscreen-aqua-gel", "images": [{"url": "https://images.mamaearth.in/catalog/product/1/_/1_hyaluronic_sunscreen_aqua_gel_50g_1.jpg", "label": "Hero Packshot"}, {"url": "https://images.mamaearth.in/catalog/product/1/_/1_hyaluronic_sunscreen_aqua_gel_50g_2.jpg", "label": "Broad-Spectrum SPF 50"}, {"url": "https://images.mamaearth.in/catalog/product/1/_/1_hyaluronic_sunscreen_aqua_gel_50g_3.jpg", "label": "Hyaluronic Acid Hydration"}, {"url": "https://images.mamaearth.in/catalog/product/1/_/1_hyaluronic_sunscreen_aqua_gel_50g_4.jpg", "label": "Blue Light Shield"}, {"url": "https://images.mamaearth.in/catalog/product/1/_/1_hyaluronic_sunscreen_aqua_gel_50g_5.jpg", "label": "Texture Demonstration"}, {"url": "https://images.mamaearth.in/catalog/product/1/_/1_hyaluronic_sunscreen_aqua_gel_50g_6.jpg", "label": "Clinical Certification"}, {"url": "https://images.mamaearth.in/catalog/product/1/_/1_hyaluronic_sunscreen_aqua_gel_50g_7.jpg", "label": "How to Use Guide"}]}, {"brand": "The Derma Co", "product": "1% Hyaluronic Sunscreen Oil-Free Matte Gel — 50g", "is_tdc": true, "price": "₹449", "mrp": "₹499", "rating": "4.8 ★ (Official Store)", "pdp_url": "https://thedermaco.com/products/1-hyaluronic-sunscreen-oil-free-gel-50-g", "images": [{"url": "https://images.mamaearth.in/catalog/product/1/_/1_hyaluronic_sunscreen_oil_free_gel_50g_1.jpg", "label": "Hero Matte Gel Packshot"}, {"url": "https://images.mamaearth.in/catalog/product/1/_/1_hyaluronic_sunscreen_oil_free_gel_50g_2.jpg", "label": "6-Hour Oil Control Claim"}, {"url": "https://images.mamaearth.in/catalog/product/1/_/1_hyaluronic_sunscreen_oil_free_gel_50g_3.jpg", "label": "Pore Blurring Finish"}]}, {"brand": "Minimalist", "product": "Multi-Vitamin SPF 50 Sunscreen — 50g", "is_tdc": false, "price": "₹379", "mrp": "₹399", "rating": "4.6 ★ (beminimalist.co)", "pdp_url": "https://beminimalist.co/products/multi-vitamin-spf-50", "images": [{"url": "https://cdn.shopify.com/s/files/1/0410/9608/5665/files/SPF50New.jpg", "label": "Hero Packshot"}, {"url": "https://cdn.shopify.com/s/files/1/0410/9608/5665/files/SPF_50_2.png", "label": "Multi-Vitamin Synergy"}, {"url": "https://cdn.shopify.com/s/files/1/0410/9608/5665/files/SPF_50_3.png", "label": "In-Vivo Testing Lab"}, {"url": "https://cdn.shopify.com/s/files/1/0410/9608/5665/files/SPF_50_4.png", "label": "Lightweight Texture"}]}, {"brand": "Dot & Key", "product": "Watermelon Hyaluronic Cooling Sunscreen — 50g", "is_tdc": false, "price": "₹445", "mrp": "₹495", "rating": "4.6 ★ (dotandkey.com)", "pdp_url": "https://dotandkey.com/products/watermelon-cooling-spf-50-face-sunscreen", "images": [{"url": "https://dotandkey.com/cdn/shop/files/1_15_1080x.jpg?v=1714717144", "label": "Hero Packshot"}, {"url": "https://dotandkey.com/cdn/shop/files/2_12_1080x.jpg?v=1714717144", "label": "Cooling Hydration"}, {"url": "https://dotandkey.com/cdn/shop/files/3_11_1080x.jpg?v=1714717144", "label": "Watermelon Extract"}]}, {"brand": "Foxtale", "product": "Cover Up Dewy Sunscreen SPF 50 — 50ml", "is_tdc": false, "price": "₹535", "mrp": "₹595", "rating": "4.7 ★ (foxtale.in)", "pdp_url": "https://foxtale.in/products/glow-sunscreen-m-50-g", "images": [{"url": "https://foxtale.in/cdn/shop/files/CoverUpDewySPF50_ListingImage.jpg", "label": "Hero Packshot"}, {"url": "https://foxtale.in/cdn/shop/files/Dewy_PDP_2.jpg", "label": "Glass Skin Shine"}]}, {"brand": "Cetaphil", "product": "Sun SPF 50+ Light Gel — 50ml", "is_tdc": false, "price": "₹990", "mrp": "₹1,180", "rating": "4.8 ★ (cetaphil.in)", "pdp_url": "https://www.cetaphil.in/sunscreens/cetaphil-spf-50%2B-sunscreen/3499320013192.html", "images": [{"url": "https://www.cetaphil.in/dw/image/v2/BGGZ_PRD/on/demandware.static/-/Sites-galderma-m-in-master-catalog/default/dwc6e1dbba/3499320013192_1.jpg", "label": "Official Tube"}, {"url": "https://www.cetaphil.in/dw/image/v2/BGGZ_PRD/on/demandware.static/-/Sites-galderma-m-in-master-catalog/default/dwc6e1dbba/3499320013192_2.jpg", "label": "Clinical Sun Care"}]}]}};
+        const aquaMatrix = {"product_name": "The Derma Co 1% Hyaluronic Sunscreen Aqua Gel — 50g", "category_label": "Website", "marketplaces": ["Brand D2C Store", "Amazon", "Flipkart", "Nykaa", "Purplle", "Blinkit", "Zepto", "Instamart"], "fields": [{"field": "Description", "values": {"Brand D2C Store": "Get the ideal sun protection with 1% Hyaluronic Sunscreen Aqua Gel. It features SPF 50 & PA++++ to protect from UVA, UVB, and blue light.", "Amazon": "Protect your skin with this 1% Hyaluronic Sunscreen Aqua Gel. It offers SPF 50 PA++++ protection and deep hydration.", "Flipkart": "The Derma Co 1% Hyaluronic Sunscreen Aqua Gel is a lightweight, broad-spectrum SPF 50 PA++++ sunscreen that leaves no white cast.", "Nykaa": "This sunscreen pairs broad-spectrum SPF 50 and PA++++ defence with lasting hydration. It slips seamlessly into your daily routine.", "Purplle": "A broad-spectrum daily sunscreen gel with SPF 50 PA++++ that delivers weightless hydration and shields skin from harmful UVA, UVB, and screen blue light without any chalky cast.", "Blinkit": "The Derma Co 1% Hyaluronic Sunscreen Aqua Gel SPF 50 with PA++++ delivers intense hydration and sun defense in minutes.", "Zepto": "Get quick delivery of The Derma Co 1% Hyaluronic Sunscreen Aqua Gel. Enjoy SPF 50 protection with a lightweight, hydrating feel.", "Instamart": "The Derma Co 1% Hyaluronic Sunscreen Aqua Gel SPF 50 is your go-to for daily sun protection and hydration, available instantly."}}, {"field": "Key benefits", "values": {"Brand D2C Store": "Provides broad-spectrum protection, intense hydration with Hyaluronic Acid, and safeguards against blue light damage.", "Amazon": "Hydrates the skin with Hyaluronic Acid while protecting against UVA/UVB and environmental blue light stress.", "Flipkart": "Provides excellent sun protection while keeping the skin hydrated. It is lightweight, non-greasy, and absorbs quickly.", "Nykaa": "Shields against UVB rays, offers 24-hour hydration with Sodium Hyaluronate, and leaves an invisible finish on all skin tones.", "Purplle": "Enriched with 1% Hyaluronic Acid and Vitamin E to fight free radicals, prevent sun spots, and ensure prolonged dermal hydration.", "Blinkit": "Offers broad-spectrum UV and blue light protection. Hydrates intensely with Hyaluronic Acid for plump, protected skin.", "Zepto": "Offers broad-spectrum UV and blue light protection. Hydrates intensely with Hyaluronic Acid for fresh, dewy skin.", "Instamart": "Provides high SPF 50 and PA++++ protection, infused with Hyaluronic Acid to nourish and guard skin against photoaging."}}, {"field": "What This Sunscreen Does Not Do", "values": {"Brand D2C Store": "It does not leave a white cast. It does not feel greasy or sticky, and does not clog pores, making it ideal for daily use.", "Amazon": "It does not leave any sticky residue or white cast, ensuring a comfortable wear throughout the day.", "Flipkart": "It does not leave a white cast and does not make the skin feel greasy or heavy after application.", "Nykaa": "It does not feel heavy or leave a residue. It stays nearly invisible across most skin tones without adding excess shine.", "Purplle": "It does not leave chalky patches, does not pill under cosmetics, and does not suffocate oily skin pores.", "Blinkit": "It does not clog pores or leave a greasy film on the skin, making it comfortable for all-day wear.", "Zepto": "It does not clog pores or leave a greasy film on the skin, making it comfortable for all-day wear.", "Instamart": "It does not leave a white cast and avoids the heavy, sticky feeling common with traditional sunscreens."}}, {"field": "Texture and Finish", "values": {"Brand D2C Store": "It features a lightweight aqua gel texture that absorbs quickly into the skin, leaving a dewy finish without any greasy after-feel.", "Amazon": "The water-light gel texture absorbs instantly, leaving a natural, non-greasy finish that works well under makeup.", "Flipkart": "It has a lightweight gel texture that blends easily into the skin, providing a smooth and hydrating finish.", "Nykaa": "The aqua-gel texture is breathable and non-sticky. It absorbs quickly, leaving skin fresh and naturally refined with no white cast.", "Purplle": "Fast-absorbing aqua gel emulsion that spreads effortlessly with zero tackiness and a dewy skin-like glow.", "Blinkit": "A non-greasy, lightweight aqua gel texture that sinks right into the skin for a fresh, dewy look.", "Zepto": "A non-greasy, lightweight aqua gel texture that sinks right into the skin for a fresh, dewy look.", "Instamart": "Features an ultra-light, water-like gel consistency that leaves a smooth, non-oily finish."}}, {"field": "Who Should Use It", "values": {"Brand D2C Store": "Formulated for normal to oily skin types. It is safe and effective for anyone looking for lightweight hydration and sun protection.", "Amazon": "Perfect for oily, normal, and combination skin types seeking effective sun protection with added hydration.", "Flipkart": "Suitable for all skin types, especially those looking for a lightweight, hydrating sunscreen without a white cast.", "Nykaa": "Ideal for normal, oily, and combination skin. Great for dull or dehydrated skin that benefits from sustained hydration.", "Purplle": "Recommended for anyone with combination, normal, or dehydrated oily skin who dislikes traditional heavy sunscreen creams.", "Blinkit": "Great for anyone needing quick, effective sun protection that doubles as a lightweight moisturizer.", "Zepto": "Great for anyone needing quick, effective sun protection that doubles as a lightweight moisturizer.", "Instamart": "Ideal for daily use by individuals with normal, oily, or combination skin looking for a hydrating SPF."}}, {"field": "Who Should Avoid It", "values": {"Brand D2C Store": "Those looking for a purely mineral or matte finish sunscreen might want to explore other options, as this leaves a dewy finish.", "Amazon": "Those who prefer physical mineral sunscreens or require an ultra-matte finish might prefer other formulations.", "Flipkart": "Individuals who are allergic to specific chemical UV filters should check the ingredient list before use.", "Nykaa": "Those with known reactions to chemical filters, very dry skin needing heavy creams, or those preferring a fully matte finish.", "Purplle": "Individuals wanting a powder-matte oil-blotting finish or physical-only non-nano mineral sunscreens.", "Blinkit": "People with extremely dry skin might need an additional moisturizer underneath this gel sunscreen.", "Zepto": "People with extremely dry skin might need an additional moisturizer underneath this gel sunscreen.", "Instamart": "Those who are sensitive to chemical sunscreen agents should perform a patch test first."}}, {"field": "Common Mistakes to Avoid", "values": {"Brand D2C Store": "Avoid applying too little. Do not mix it with your moisturizer or foundation, as this can reduce its protective efficacy.", "Amazon": "Forgetting to apply on the neck and ears, or not waiting 15 minutes before sun exposure.", "Flipkart": "Skipping reapplication during prolonged sun exposure or applying an insufficient amount for full face coverage.", "Nykaa": "Applying right before stepping out, using less than a two-finger measure, or blending it into foundation compromises protection.", "Purplle": "Failing to reapply every 2 to 3 hours when outdoors, and rubbing aggressively instead of patting and smoothing.", "Blinkit": "Using a tiny amount. Always use the two-finger rule to ensure adequate SPF 50 coverage on your face and neck.", "Zepto": "Using a tiny amount. Always use the two-finger rule to ensure adequate SPF 50 coverage on your face and neck.", "Instamart": "Relying on a single morning application for all-day outdoor activities. Reapply every few hours."}}, {"field": "Common Questions", "values": {"Brand D2C Store": "When to apply? As the final step of your morning routine. Is it tested? Yes, it has undergone In-Vivo SPF testing.", "Amazon": "Is it safe for acne-prone skin? Yes, it is non-comedogenic. Can it block blue light? Yes, it offers blue light protection.", "Flipkart": "Does it leave a white cast? No, it blends seamlessly. Is it lightweight? Yes, it has a fast absorbing aqua gel formula.", "Nykaa": "Is it suitable for daily use? Yes. Does it leave a white cast? No. Can I use it under makeup? Yes, it works well as a base.", "Purplle": "Does it protect indoors? Yes, against HEV blue light from laptops and phones. Is it fragrance-free? Yes.", "Blinkit": "Is it fragrance-free? Yes. Does it protect against blue light? Yes, it shields against screen-emitted blue light.", "Zepto": "Is it fragrance-free? Yes. Does it protect against blue light? Yes, it shields against screen-emitted blue light.", "Instamart": "Can I use it indoors? Yes, it protects against blue light from screens. Is it non-comedogenic? Yes."}}]};
+        const matteMatrix = {"product_name": "The Derma Co 1% Hyaluronic Sunscreen Oil-Free Matte Gel — 50g", "category_label": "Website", "marketplaces": ["Brand D2C Store", "Amazon", "Flipkart", "Nykaa", "Purplle", "Blinkit", "Zepto", "Instamart"], "fields": [{"field": "Description", "values": {"Brand D2C Store": "Control oil and protect your skin with 1% Hyaluronic Sunscreen Oil-Free Matte Gel. Engineered with Seboclear-MP and SPF 50 PA++++.", "Amazon": "An ultra-lightweight oil-free matte sunscreen gel delivering SPF 50 PA++++ broad-spectrum sun defense and 6-hour oil control.", "Flipkart": "The Derma Co 1% Hyaluronic Oil-Free Sunscreen Gel is formulated for oily and acne-prone skin with no white cast.", "Nykaa": "This matte sunscreen pairs high UV protection with active sebum regulation. Leaves skin refreshed, shine-free, and protected.", "Purplle": "Daily oil-free mattifying sunscreen with 1% Hyaluronic Acid and Zinc PCA. Blocks UVA, UVB, and screen blue light.", "Blinkit": "Fast delivery of The Derma Co 1% Hyaluronic Oil-Free Matte Sunscreen Gel with SPF 50 PA++++ for shine-free skin.", "Zepto": "Get instant delivery of The Derma Co 1% Hyaluronic Sunscreen Oil-Free Gel for oily, acne-prone skin with SPF 50 PA++++.", "Instamart": "The Derma Co 1% Hyaluronic Oil-Free Matte Gel SPF 50 keeps skin protected and shine-free all day long."}}, {"field": "Key benefits", "values": {"Brand D2C Store": "6-hour oil control, reduces active breakout occurrence, hydrates without grease, shields against blue light.", "Amazon": "Regulates excess sebum, blurs open pores, provides In Vivo tested SPF 50 PA++++ photoprotection.", "Flipkart": "Controls excess shine, non-comedogenic, prevents clogged pores, and provides robust broad-spectrum sun protection.", "Nykaa": "Absorbs facial oil, controls midday shine, fortified with Zinc PCA and Hyaluronic Acid for balanced hydration.", "Purplle": "Controls sebum, calms redness, shields against HEV blue light, and prevents photoaging without clogging pores.", "Blinkit": "6-hour shine-free finish, zero white cast, broad-spectrum UV protection, non-comedogenic.", "Zepto": "Controls excess sebum, minimizes acne risk, zero white cast, fast-absorbing matte finish.", "Instamart": "Offers high SPF 50 protection while keeping facial oil and shine completely under control."}}, {"field": "What This Sunscreen Does Not Do", "values": {"Brand D2C Store": "It does not leave a white cast. It does not feel greasy or sticky, and does not clog pores, making it ideal for acne-prone skin.", "Amazon": "It does not leave a greasy shine or chalky cast, and does not cause breakout congestion.", "Flipkart": "It does not make skin oily or greasy, does not cause white patches, and does not pill on skin.", "Nykaa": "It does not add unwanted shine, does not clog pores, and does not leave a sticky residue.", "Purplle": "It does not suffocate pores, does not leave chalky residues, and does not exacerbate active acne.", "Blinkit": "It does not clog pores or leave a greasy film on the skin, ensuring a clean matte finish.", "Zepto": "It does not leave any sticky or oily residue, making it ideal for humid weather.", "Instamart": "It does not leave a white cast and avoids the oily, heavy sensation of standard sunscreens."}}, {"field": "Texture and Finish", "values": {"Brand D2C Store": "Oil-free gel texture with an instant silicone-free matte touch that absorbs excess sebum and leaves a shine-free velvety finish.", "Amazon": "Lightweight, velvety matte gel that blurs pores and dries down completely shine-free.", "Flipkart": "Smooth oil-free gel that absorbs in seconds, leaving an invisible matte finish.", "Nykaa": "Breathable, airy matte gel texture that controls shine without drying out the skin.", "Purplle": "Non-tacky gel texture that melts into an invisible velvet matte layer.", "Blinkit": "Weightless matte gel that leaves an instant shine-free and oil-controlled look.", "Zepto": "Ultra-lightweight oil-free gel formula delivering an immediate matte, shine-free feel.", "Instamart": "Lightweight water-gel consistency that dries down to an oil-free matte finish."}}, {"field": "Who Should Use It", "values": {"Brand D2C Store": "Oily, extremely oily, and acne-prone skin types looking for sun protection with active oil control.", "Amazon": "Ideal for oily, combination, and acne-prone skin needing shine control in hot humid weather.", "Flipkart": "Suitable for anyone with oily or blemish-prone skin seeking a lightweight matte sunscreen.", "Nykaa": "Formulated for congested, oily, and breakout-prone skin seeking a non-greasy shield.", "Purplle": "Recommended for individuals struggling with greasy T-zones and enlarged pores.", "Blinkit": "Perfect for oily and combination skin needing rapid daily shine control and SPF 50.", "Zepto": "Great for anyone with oily or acne-prone skin seeking high protection without shine.", "Instamart": "Best suited for individuals with oily or combination skin needing all-day matte sun protection."}}, {"field": "Who Should Avoid It", "values": {"Brand D2C Store": "Those with extremely dry or peeling skin barriers who require rich emollient hydration (recommend Aqua Gel).", "Amazon": "Those with severely dry skin needing deep oil nourishment or a radiant dewy reflection.", "Flipkart": "Individuals with very dry skin who might find a mattifying formula too lightweight.", "Nykaa": "Very dry skin types or those looking for a glossy, glass-skin dewy finish.", "Purplle": "People with flaky dry patches who prefer rich cream-based sun lotions.", "Blinkit": "Extremely dry skin users who need heavy moisturizing properties in their sunscreen.", "Zepto": "Users looking for a dewy, glowing finish rather than an oil-free matte effect.", "Instamart": "Individuals with very dry skin who should layer a rich moisturizer underneath."}}, {"field": "Common Mistakes to Avoid", "values": {"Brand D2C Store": "Applying over thick facial oils or skipping regular reapplication during outdoor heat exposure.", "Amazon": "Using less than two full finger lengths or applying onto sweaty unwashed skin.", "Flipkart": "Failing to reapply every 2-3 hours or skipping application on ears and neck.", "Nykaa": "Applying right before sun exposure without waiting 15 minutes for the protective film to set.", "Purplle": "Rubbing violently instead of spreading evenly across the skin.", "Blinkit": "Using a pea-sized amount; always follow the two-finger rule for complete protection.", "Zepto": "Assuming a single application lasts through heavy perspiration without reapplication.", "Instamart": "Skipping sunscreen on cloudy days or indoor computer screen exposure."}}, {"field": "Common Questions", "values": {"Brand D2C Store": "Does it control oil? Yes, clinically proven 6-hour oil control. Is it non-comedogenic? Yes, formulated without pore-clogging waxes.", "Amazon": "Does it cause breakouts? No, formulated with Zinc PCA to actively prevent acne. Is it fragrance-free? Yes.", "Flipkart": "Is it tested? Yes, In Vivo tested SPF 50 PA++++. Does it leave white residue? No white cast.", "Nykaa": "Can it be used under makeup? Yes, acts as a smooth oil-control primer. Is it water resistant? Sweat resistant.", "Purplle": "Does it block blue light? Yes, protects against digital screen radiation. Is it sticky? Completely non-sticky.", "Blinkit": "Is it suitable for daily use? Yes, ideal for everyday morning application.", "Zepto": "Does it leave a greasy shine? No, specifically designed for a 100% shine-free matte finish.", "Instamart": "Can men use it on beards? Yes, dissolves completely transparent without white buildup."}}]};
+        let currentMp = 'Amazon';
+
+        function switchMarketplace(mpKey) {
+            currentMp = mpKey;
+            
+            // Update active pill styling
+            document.querySelectorAll('.mp-pill').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.innerText.includes(mpKey) || (mpKey === 'TDC_AQUA_MATRIX' && btn.innerText.includes('Aqua Gel Verbatim')) || (mpKey === 'TDC_MATTE_MATRIX' && btn.innerText.includes('Matte Gel Verbatim')) || (mpKey === 'Brand D2C Store' && btn.innerText.includes('D2C'))) {
+                    btn.classList.add('active');
+                }
+            });
+
+            const mpView = document.getElementById('marketplaceView');
+            const matrixView = document.getElementById('verbatimMatrixView');
+
+            if (mpKey === 'TDC_AQUA_MATRIX') {
+                mpView.style.display = 'none';
+                matrixView.style.display = 'block';
+                renderVerbatimMatrix(aquaMatrix);
+            } else if (mpKey === 'TDC_MATTE_MATRIX') {
+                mpView.style.display = 'none';
+                matrixView.style.display = 'block';
+                renderVerbatimMatrix(matteMatrix);
+            } else {
+                matrixView.style.display = 'none';
+                mpView.style.display = 'block';
+                renderMarketplaceView(mpKey);
+            }
+        }
+
+        function renderMarketplaceView(mpKey) {
+            const data = mpData[mpKey];
+            if (!data) return;
+
+            const introBar = document.getElementById('mpIntroBar');
+            introBar.innerHTML = `
+                <div>
+                    <h2>${data.title}</h2>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px;">
+                        Comparing uploaded packshots and A+ graphics vertically across all brands in exact upload sequence.
+                    </p>
+                </div>
+                <span class="brand-badge" style="background:#0f172a;">${data.brands.length} Brands Tracked</span>
+            `;
+
+            const container = document.getElementById('brandsContainer');
+            container.innerHTML = '';
+
+            data.brands.forEach((b, idx) => {
+                const row = document.createElement('div');
+                row.className = `brand-canvas-row ${b.is_tdc ? 'is-tdc' : ''}`;
+                row.innerHTML = `
+                    <div class="row-meta-bar">
+                        <div class="brand-title-wrap">
+                            <span class="brand-name-tag">${b.brand}</span>
+                            <span style="font-size:0.9rem; font-weight:600; color:var(--text-secondary);">${b.product}</span>
+                            <span class="${b.is_tdc ? 'tdc-badge' : 'comp-badge'}">${b.is_tdc ? '🌟 THE DERMA CO' : '⚔️ COMPETITOR'}</span>
+                        </div>
+                        <div class="meta-stats">
+                            <span>Selling: ${b.price} <del style="color:#94a3b8;">${b.mrp}</del></span>
+                            <span>${b.rating}</span>
+                            <a href="${b.pdp_url}" target="_blank" class="pdp-jump-btn">Open ${mpKey} PDP ↗</a>
+                        </div>
+                    </div>
+                    <div class="images-track">
+                        ${b.images.map((img, i) => `
+                            <div class="image-card" onclick="openLightbox('${img.url}')">
+                                <span class="card-seq-tag">#${i+1}</span>
+                                <img src="${img.url}" alt="${b.brand} Image ${i+1}" loading="lazy" onerror="this.src='https://placehold.co/155x155?text=Image+${i+1}'">
+                                <span class="card-label-tag" title="${img.label}">${img.label}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function renderVerbatimMatrix(matrixData) {
+            document.getElementById('matrixTitle').innerText = matrixData.product_name + " — Verbatim PDP Content Matrix";
+            const table = document.getElementById('matrixTable');
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th style="width: 100px;">Category</th>
+                        <th style="width: 180px;">Content Field</th>
+                        ${matrixData.marketplaces.map(m => `<th style="width: 260px;">${m}</th>`).join('')}
+                    </tr>
+                </thead>
+                <tbody>
+                    ${matrixData.fields.map((f, idx) => `
+                        <tr>
+                            ${idx === 0 ? `<td class="cat-cell" rowspan="${matrixData.fields.length}">Website</td>` : ''}
+                            <td class="field-cell">${f.field}</td>
+                            ${matrixData.marketplaces.map(m => `
+                                <td>${f.values[m] || '—'}</td>
+                            `).join('')}
+                        </tr>
+                    `).join('')}
+                </tbody>
+            `;
+        }
+
+        // Lightbox functions
+        function openLightbox(src) {
+            const modal = document.getElementById('lightboxModal');
+            const img = document.getElementById('lightboxImg');
+            img.src = src;
+            modal.classList.add('open');
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightboxModal').classList.remove('open');
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeLightbox();
+        });
+
+        // Load Default View
+        renderMarketplaceView('Amazon');
+    </script>
+</body>
+</html>

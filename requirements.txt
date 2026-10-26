@@ -1,0 +1,32 @@
+# =====================================================================
+# HONASA Consumer — Competitive Intelligence & E-Commerce Suite
+# Python Environment Requirements
+# =====================================================================
+# Install with: pip install -r requirements.txt
+# Or run with UV: uv pip install -r requirements.txt
+
+# Web App & Dashboard Framework
+streamlit>=1.38.0
+
+# Data Analysis & Excel Processing
+pandas>=2.2.0
+openpyxl>=3.1.5
+tabulate>=0.9.0
+
+# Web Scraping & HTTP Clients
+beautifulsoup4>=4.12.3
+curl_cffi>=0.7.3
+
+# AI & LLM APIs
+google-genai>=0.1.1
+
+# Social Media Extraction & Automation
+apify-client>=1.8.0
+yt-dlp>=2024.8.6
+
+# Data Validation & Image Processing
+pydantic>=2.8.2
+pillow>=10.4.0
+
+# Testing & Verification
+pytest>=8.3.0

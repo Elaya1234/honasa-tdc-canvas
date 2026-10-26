@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HONASA Consumer — Tools Hub & Launchpad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0b1120;
+  --bg-card: #1e293b;
+  --bg-card-hover: #24344d;
+  --border: #334155;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  --primary: #0ea5e9;
+  --primary-glow: rgba(14, 165, 233, 0.25);
+  --teal: #14b8a6;
+  --teal-glow: rgba(20, 184, 166, 0.25);
+  --accent: #6366f1;
+  --font: 'Plus Jakarta Sans', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text-main);
+  min-height: 100vh;
+  line-height: 1.6;
+  padding-bottom: 80px;
+}
+/* Navigation Header */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(11, 17, 32, 0.85);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.brand-badge {
+  background: linear-gradient(135deg, #0ea5e9, #6366f1);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.75rem;
+  letter-spacing: 0.8px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+.brand-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+.nav-links {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.nav-btn {
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(30, 41, 59, 0.6);
+  transition: all 0.15s ease;
+}
+.nav-btn:hover {
+  color: #fff;
+  background: var(--bg-card);
+  border-color: var(--primary);
+}
+.nav-btn.primary {
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  color: #fff;
+  border: none;
+}
+.nav-btn.primary:hover {
+  box-shadow: 0 0 15px var(--primary-glow);
+}
+
+/* Hero Section */
+.hero {
+  max-width: 1200px;
+  margin: 40px auto 20px;
+  padding: 0 24px;
+  text-align: center;
+}
+.hero-tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--teal);
+  background: rgba(20, 184, 166, 0.12);
+  border: 1px solid rgba(20, 184, 166, 0.3);
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.hero h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+  line-height: 1.2;
+  margin-bottom: 14px;
+  background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero p {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  max-width: 720px;
+  margin: 0 auto 30px;
+}
+
+/* Category Filter Tabs */
+.filter-tabs {
+  max-width: 1200px;
+  margin: 0 auto 32px;
+  padding: 0 24px;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.filter-tab {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 8px 18px;
+  border-radius: 24px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-tab:hover {
+  color: #fff;
+  border-color: #475569;
+}
+.filter-tab.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+  box-shadow: 0 0 16px var(--primary-glow);
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #f1f5f9;
+}
+.section-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: #334155;
+  color: #cbd5e1;
+}
+
+/* Grid of Tools */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 20px;
+  margin-bottom: 48px;
+}
+
+/* Tool Card */
+.tool-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+.tool-card:hover {
+  background: var(--bg-card-hover);
+  border-color: #475569;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -10px rgba(0,0,0,0.5);
+}
+.tool-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.tool-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+.tool-pill {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 3px 9px;
+  border-radius: 12px;
+}
+.pill-live {
+  background: rgba(20, 184, 166, 0.15);
+  color: #2dd4bf;
+  border: 1px solid rgba(20, 184, 166, 0.3);
+}
+.pill-desktop {
+  background: rgba(14, 165, 233, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(14, 165, 233, 0.3);
+}
+.pill-report {
+  background: rgba(168, 85, 247, 0.15);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+}
+.pill-engine {
+  background: rgba(148, 163, 184, 0.15);
+  color: #cbd5e1;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.tool-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+}
+.tool-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 16px;
+  flex: 1;
+}
+
+.tool-specs {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(51, 65, 85, 0.5);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 0.75rem;
+  margin-bottom: 16px;
+  color: #cbd5e1;
+}
+.spec-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.spec-row:last-child { margin-bottom: 0; }
+.spec-label { color: var(--text-dim); font-weight: 600; }
+.spec-val { font-family: var(--mono); color: #e2e8f0; font-weight: 600; }
+
+.tool-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.btn-open {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 9px 14px;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+  border: none;
+  cursor: pointer;
+}
+.btn-open:hover {
+  box-shadow: 0 0 16px var(--primary-glow);
+  transform: translateY(-1px);
+}
+.btn-open.live {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+.btn-open.live:hover {
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.4);
+}
+.btn-code {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 9px 12px;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+}
+.btn-code:hover {
+  color: #fff;
+  border-color: #64748b;
+  background: rgba(51, 65, 85, 0.4);
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 30px 24px 0;
+  border-top: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 0.8rem;
+}
+footer a { color: var(--text-muted); text-decoration: none; }
+footer a:hover { color: var(--primary); }
+
+@media (max-width: 768px) {
+  .hero h1 { font-size: 1.85rem; }
+  .tools-grid { grid-template-columns: 1fr; }
+  .navbar { flex-direction: column; gap: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header Navigation -->
+<header class="navbar">
+  <div class="brand-group">
+    <span class="brand-badge">HONASA TDC</span>
+    <span class="brand-title">Enterprise Intelligence & E-Commerce Suite</span>
+  </div>
+  <div class="nav-links">
+    <a href="index.html" class="nav-btn">📊 Research Canvas</a>
+    <a href="Sunscreen_Comparison_Board_v3.html" class="nav-btn">☀️ Sunscreen Board</a>
+    <a href="https://github.com/Elaya1234/honasa-tdc-canvas" target="_blank" class="nav-btn primary">GitHub Repository ↗</a>
+  </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-tag">Enterprise Knowledge Hub</div>
+  <h1>Honasa Competitive Intelligence Suite</h1>
+  <p>A centralized portfolio of interactive web dashboards, autonomous marketplace crawlers, and AI-assisted analytics built for brand managers, catalog specialists, and e-commerce leaders.</p>
+</section>
+
+<!-- Category Filter -->
+<div class="filter-tabs">
+  <button class="filter-tab active" onclick="filterCards('all', this)">All Tools (12)</button>
+  <button class="filter-tab" onclick="filterCards('web', this)">🌐 Live Web Dashboards (6)</button>
+  <button class="filter-tab" onclick="filterCards('ai', this)">🤖 Autonomous AI Agents (4)</button>
+  <button class="filter-tab" onclick="filterCards('engine', this)">⚡ Automation Engines (2)</button>
+</div>
+
+<!-- Main Container -->
+<main class="container">
+
+  <!-- SECTION 1: LIVE WEB DASHBOARDS -->
+  <div class="section-title">
+    <span>🌐 Instant Live Web Dashboards</span>
+    <span class="section-badge">No installation needed • 1-Click Browser Access</span>
+  </div>
+
+  <div class="tools-grid">
+
+    <!-- Card 1: Competitive Research Canvas -->
+    <div class="tool-card" data-cat="web">
+      <div class="tool-header">
+        <span class="tool-icon">📊</span>
+        <span class="tool-pill pill-live">● Live Web App</span>
+      </div>
+      <h3 class="tool-title">Product Page Competitive Canvas</h3>
+      <p class="tool-desc">Massive multi-category competitive dashboard indexing 334 scraped listings across 4 categories (Facewash, Sunscreen, Serum, Shampoo). Features side-by-side dual image comparators, claims matrices, and full INCI breakdowns.</p>
+      <div class="tool-specs">
+        <div class="spec-row"><span class="spec-label">Coverage:</span><span class="spec-val">334 SKUs • 9 Brands • 5 Platforms</span></div>
+        <div class="spec-row"><span class="spec-label">Assets:</span><span class="spec-val">4,192 Images • 258 Videos</span></div>
+        <div class="spec-row"><span class="spec-label">Access:</span><span class="spec-val">Browser / Mobile Ready</span></div>
+      </div>
+      <div class="tool-actions">
+        <a href="index.html" class="btn-open live">Open Live Canvas ↗</a>
+        <a href="https://github.com/Elaya1234/honasa-tdc-canvas/blob/main/index.html" target="_blank" class="btn-code">Source</a>
+      </div>
+    </div>
+
+    <!-- Card 2: SKUScout Sunscreen Board v3 -->
+    <div class="tool-card" data-cat="web">
+      <div class="tool-header">
+        <span class="tool-icon">☀️</span>
+        <span class="tool-pill pill-live">● Live Web App</span>
+      </div>
+      <h3 class="tool-title">Sunscreen Multi-Marketplace Board (v3)</h3>
+      <p class="tool-desc">Real-time SKUScout visual intelligence board comparing sunscreen hero products across 8 major Indian marketplaces with filterable marketplace pills, image scrolls, and direct product links.</p>
+      <div class="tool-specs">
+        <div class="spec-row"><span class="spec-label">Platforms:</span><span class="spec-val">Amazon, Nykaa, Blinkit, Flipkart, D2C, Zepto</span></div>
+        <div class="spec-row"><span class="spec-label">Features:</span><span class="spec-val">430 Images, Verified Pricing, Live Links</span></div>
+        <div class="spec-row"><span class="spec-label">Access:</span><span class="spec-val">Browser / Mobile Ready</span></div>
+      </div>
+      <div class="tool-actions">
+        <a href="Sunscreen_Comparison_Board_v3.html" class="btn-open live">Open Sunscreen Board ↗</a>
+        <a href="https://github.com/Elaya1234/honasa-tdc-canvas/blob/main/Sunscreen_Comparison_Board_v3.html" target="_blank" class="btn-code">Source</a>
+      </div>
+    </div>
+
+    <!-- Card 3: South KYC Face Wash Analysis -->
+    <div class="tool-card" data-cat="web">
+      <div class="tool-header">
+        <span class="tool-icon">🧼</span>
+        <span class="tool-pill pill-report">Report Dashboard</span>
+      </div>
+      <h3 class="tool-title">South Consumer (KYC) Face Wash Analysis</h3>
+      <p class="tool-desc">Interactive consumer research dashboard exploring South Indian market demand, cleansing preferences, ingredient priorities (Salicylic, Kojic, Vitamin C), and brand verbatim feedback.</p>
+      <div class="tool-specs">
+        <div class="spec-row"><span class="spec-label">Focus:</span><span class="spec-val">Face Wash Consumer Preferences</span></div>
+        <div class="spec-row"><span class="spec-label">Format:</span><span class="spec-val">Interactive Charts & Statistical Panels</span></div>
+      </div>
+      <div class="tool-actions">
+        <a href="TDC_South%20KYC%20%20Analysis/TDC_South_KYC_Face_Wash_FINAL_PERMANENT.html" class="btn-open">Open Report ↗</a>
+      </div>
+    </div>
+
+    <!-- Card 4: South KYC Sunscreen Analysis -->
+    <div class="tool-card" data-cat="web">
+      <div class="tool-header">
+        <span class="tool-icon">🧴</span>
+        <span class="tool-pill pill-report">Report Dashboard</span>
+      </div>
+      <h3 class="tool-title">South Consumer (KYC) Sunscreen Analysis</h3>
+      <p class="tool-desc">Comprehensive consumer perception dashboard analyzing white-cast complaints, reapplication frequency, sweat-resistance preferences, and aqua-gel formulation reception.</p>
+      <div class="tool-specs">
+        <div class="spec-row"><span class="spec-label">Focus:</span><span class="spec-val">Sunscreen Texture & Efficacy Perception</span></div>
+        <div class="spec-row"><span class="spec-label">Format:</span><span class="spec-val">Interactive Demographic & Sentiment Panels</span></div>
+      </div>
+      <div class="tool-actions">
+        <a href="TDC_South%20KYC%20%20Analysis/TDC_South_KYC_Sunscreen_FINAL_PERMANENT.html" class="btn-open">Open Report ↗</a>
+      </div>
+    </div>
+
+    <!-- Card 5: South KYC Serum Analysis -->
+    <div class="tool-card" data-cat="web">
+      <div class="tool-header">
+        <span class="tool-icon">💧</span>
+        <span class="tool-pill pill-report">Report Dashboard</span>
+      </div>
+      <h3 class="tool-title">South Consumer (KYC) Serum Analysis</h3>
+      <p class="tool-desc">Interactive category analysis of face serum adoption across South regions, covering active ingredient awareness, dropper vs pump formats, and multi-step routine penetration.</p>
+      <div class="tool-specs">
+        <div class="spec-row"><span class="spec-label">Focus:</span><span class="spec-val">Actives Penetration & Packaging Formats</span></div>
+        <div class="spec-row"><span class="spec-label">Format:</span><span class="spec-val">Interactive Visual Analytics</span></div>
+      </div>
+      <div class="tool-actions">
+        <a href="TDC_South%20KYC%20%20Analysis/TDC_South_KYC_Serum_Analysis.html" class="btn-open">Open Report ↗</a>
+      </div>
+    </div>
+
+    <!-- Card 6: South KYC Shampoo Analysis -->
+    <div class="tool-card" data-cat="web">
+      <div class="tool-header">
+        <span class="tool-icon">💆</span>
+        <span class="tool-pill pill-report">Report Dashboard</span>
+      </div>
+      <h3 class="tool-title">South Consumer (KYC) Shampoo Analysis</h3>
+      <p class="tool-desc">Haircare consumer research intelligence examining scalp concern prevalence, sulfate-free adoption, hard-water washing challenges, and price tier sensitivity.</p>
+      <div class="tool-specs">
+        <div class="spec-row"><span class="spec-label">Focus:</span><span class="spec-val">Haircare Habits & Hard Water Solutions</span></div>
+        <div class="spec-row"><span class="spec-label">Format:</span><span class="spec-val">Category Visual Breakdown</span></div>
+      </div>
+      <div class="tool-actions">
+        <a href="TDC_South%20KYC%20%20Analysis/TDC_South_KYC_Shampoo_FINAL_v5.html" class="btn-open">Open Report ↗</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SECTION 2: AUTONOMOUS AI & DESKTOP TOOLS -->
+  <div class="section-title">
+    <span>🤖 Autonomous AI & Desktop Tools</span>
+    <span class="section-badge">1-Click Launchers for Windows • Streamlit UI</span>
+  </div>
+
+  <div class="tools-grid">
+
+    <!-- Tool 7: Exact SKU Marketplace Link Finder -->
+    <div class="tool-card" data-cat="ai">
+      <div class="tool-header">
+        <span class="tool-icon">🎯</span>
+        <span class="tool-pill pill-desktop">Streamlit • Port 8503</span>
+      </div>
+      <h3 class="tool-title">Exact SKU Marketplace Link Finder</h3>
+      <p class="tool-desc">Autonomous crawler (SKUScout) that locates and validates exact canonical marketplace URLs matching specific pack sizes (50g, 100ml, 125g), strictly excluding unwanted size variants and bundles.</p>
+      <div class="tool-specs">
+        <div class="spec-row"><span class="spec-label">Launcher:</span><span class="spec-val">Launch_SKUScout.bat</span></div>
+        <div class="spec-row"><span class="spec-label">Local URL:</span><span class="spec-val">http://localhost:8503</span></div>
+        <div class="spec-row"><span class="spec-label">Engines:</span><span class="spec-val">Amazon, Nykaa, Blinkit, Flipkart, Zepto</span></div>
+      </div>
+      <div class="tool-actions">
+        <a href="https://github.com/Elaya1234/honasa-tdc-canvas/tree/main/skuscout" target="_blank" class="btn-open">View Code & Catalog ↗</a>
+      </div>
+    </div>
+
+    <!-- Tool 8: Instagram Reel Intelligence Analyzer -->
+    <div class="tool-card" data-cat="ai">
+      <div class="tool-header">
+        <span class="tool-icon">🎬</span>
+        <span class="tool-pill pill-desktop">Streamlit • Port 8502</span>
+      </div>
+      <h3 class="tool-title">Instagram Reel Intelligence Analyzer</h3>
+      <p class="tool-desc">Extracts engagement metrics and leverages Google Gemini Multimodal AI to transcribe spoken audio verbatim, isolate opening hooks, classify concept styles, and score creator demographics.</p>
+      <div class="tool-specs">
+        <div class="spec-row"><span class="spec-label">Launcher:</span><span class="spec-val">Launch_IG_Collector.bat</span></div>
+        <div class="spec-row"><span class="spec-label">Local URL:</span><span class="spec-val">http://localhost:8502</span></div>
+        <div class="spec-row"><span class="spec-label">AI Engine:</span><span class="spec-val">Google Gemini Multimodal Audio</span></div>
+      </div>
+      <div class="tool-actions">
+        <a href="https://github.com/Elaya1234/honasa-tdc-canvas/tree/main/ig_reel_collector" target="_blank" class="btn-open">View Code & Engine ↗</a>
+      </div>
+    </div>
+
+    <!-- Tool 9: Product Data & Media Downloader -->
+    <div class="tool-card" data-cat="ai">
+      <div class="tool-header">
+        <span class="tool-icon">📥</span>
+        <span class="tool-pill pill-desktop">Streamlit • Port 8501</span>
+      </div>
+      <h3 class="tool-title">Product Data & Media Downloader</h3>
+      <p class="tool-desc">Scrapes verbatim PDP copy, specifications, claims, pricing, and all high-resolution images & videos across marketplaces. Generates structured JSON, markdown summary, and 1-click ZIP package.</p>
+      <div class="tool-specs">
+        <div class="spec-row"><span class="spec-label">Launcher:</span><span class="spec-val">Launch_PDP_Downloader.bat</span></div>
+        <div class="spec-row"><span class="spec-label">Local URL:</span><span class="spec-val">http://localhost:8501</span></div>
+        <div class="spec-row"><span class="spec-label">Output:</span><span class="spec-val">High-res Media + PDP_Data.json + ZIP</span></div>
+      </div>
+      <div class="tool-actions">
+        <a href="https://github.com/Elaya1234/honasa-tdc-canvas/blob/main/app.py" target="_blank" class="btn-open">View App Code ↗</a>
+      </div>
+    </div>
+
+    <!-- Tool 10: TDC - IM Performance Tracking Agent -->
+    <div class="tool-card" data-cat="ai">
+      <div class="tool-header">
+        <span class="tool-icon">📈</span>
+        <span class="tool-pill pill-desktop">Streamlit • Port 8504</span>
+      </div>
+      <h3 class="tool-title">TDC - IM Performance Tracking Agent</h3>
+      <p class="tool-desc">Enterprise analytics agent that ingests raw Influencer Marketing trackers, verifies Instagram Reel metrics, computes deterministic Spend/Views/CPV/ER%, and generates standardized 45-column TDC workbooks with live Excel formulas.</p>
+      <div class="tool-specs">
+        <div class="spec-row"><span class="spec-label">Launcher:</span><span class="spec-val">Launch_TDC_IM_Agent.bat</span></div>
+        <div class="spec-row"><span class="spec-label">Local URL:</span><span class="spec-val">http://localhost:8504</span></div>
+        <div class="spec-row"><span class="spec-label">Formulas:</span><span class="spec-val">=SUMIF, =COUNTIF, =IF Dynamic Reconciliation</span></div>
+      </div>
+      <div class="tool-actions">
+        <a href="https://github.com/Elaya1234/honasa-tdc-canvas/tree/main/tdc_im_agent" target="_blank" class="btn-open">View Agent Architecture ↗</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SECTION 3: AUTOMATION ENGINES -->
+  <div class="section-title">
+    <span>⚡ Background Automation Engines</span>
+    <span class="section-badge">Command-Line Utilities</span>
+  </div>
+
+  <div class="tools-grid">
+
+    <!-- Tool 11: Marketplace Link Auto-Filler -->
+    <div class="tool-card" data-cat="engine">
+      <div class="tool-header">
+        <span class="tool-icon">⚡</span>
+        <span class="tool-pill pill-engine">Background Utility</span>
+      </div>
+      <h3 class="tool-title">Marketplace Link Auto-Filler</h3>
+      <p class="tool-desc">Automatically discovers and populates missing marketplace links directly into Honasa GSO research sheets using multi-engine search and Gemini AI candidate verification.</p>
+      <div class="tool-specs">
+        <div class="spec-row"><span class="spec-label">Launcher:</span><span class="spec-val">Run_Marketplace_Link_Auto_Filler.bat</span></div>
+        <div class="spec-row"><span class="spec-label">Engine:</span><span class="spec-val">gso_master_autofill.py</span></div>
+      </div>
+      <div class="tool-actions">
+        <a href="https://github.com/Elaya1234/honasa-tdc-canvas/blob/main/gso_master_autofill.py" target="_blank" class="btn-open">View Python Script ↗</a>
+      </div>
+    </div>
+
+    <!-- Tool 12: Product Page Intelligence Extractor -->
+    <div class="tool-card" data-cat="engine">
+      <div class="tool-header">
+        <span class="tool-icon">🧬</span>
+        <span class="tool-pill pill-engine">Background Utility</span>
+      </div>
+      <h3 class="tool-title">Product Page Intelligence Extractor</h3>
+      <p class="tool-desc">Uses Gemini AI to parse raw product page copy and extract structured formulation science, limitations, texture analysis, target skin types, contraindications, and full INCI breakdowns.</p>
+      <div class="tool-specs">
+        <div class="spec-row"><span class="spec-label">Launcher:</span><span class="spec-val">Run_Product_Page_Intelligence_Extractor.bat</span></div>
+        <div class="spec-row"><span class="spec-label">Engine:</span><span class="spec-val">pdp_intelligence.py</span></div>
+      </div>
+      <div class="tool-actions">
+        <a href="https://github.com/Elaya1234/honasa-tdc-canvas/blob/main/pdp_intelligence.py" target="_blank" class="btn-open">View Python Script ↗</a>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<footer>
+  <p>HONASA Consumer Ltd. (The Derma Co) • Competitive Intelligence & Research Suite</p>
+  <p style="margin-top:6px;"><a href="https://github.com/Elaya1234/honasa-tdc-canvas" target="_blank">View on GitHub (Elaya1234/honasa-tdc-canvas)</a></p>
+</footer>
+
+<script>
+function filterCards(category, btn) {
+  document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  
+  const cards = document.querySelectorAll('.tool-card');
+  cards.forEach(card => {
+    if (category === 'all' || card.getAttribute('data-cat') === category) {
+      card.style.display = 'flex';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+</script>
+
+</body>
+</html>

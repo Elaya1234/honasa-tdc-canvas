@@ -1,35 +1,42 @@
-# Exclude large media files (GitHub has strict limits)
+# =====================================================================
+# HONASA TDC - Git Ignore Configuration
+# =====================================================================
+
+# Large media files (GitHub has strict 100MB per-file limits)
 *.mp4
 *.mov
 *.webm
 *.avi
 *.mkv
 
-# Exclude python environments and tools
-tools/
-uv_python/
-__pycache__/
-*.pyc
-*.log
-.env
-.system_generated/
-
-# Exclude internal scrapers and working files from web deployment
-*.xlsx
-*.bat
-*.ps1
-IM 2026 Analyisis/
+# Large local media directories & python virtualenvs
+PDP_Research_Board/
 MP & PDP/
-ig_reel_collector/
-skuscout/
-app.py
-pdp_engine.py
-pdp_intelligence.py
-share_online.py
-gso_master_autofill.py
-skuscout_*.py
-test_*.py
+IM 2026 Analyisis/
+uv_python/
+output_reports/
+HONASA TDC GSO/
+IM/
+tools/git/
+tools/*.exe
+
+# Python compilation & cache
+**/__pycache__/
+**/.pytest_cache/
+**/.cache_im_agent/
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.ini
+
+# Sensitive credentials & environment tokens (CRITICAL: Never leak API keys)
+**/.env
+.env.*
+
+# Internal session metadata & temporary links
+.system_generated/
 LIVE_WEBSITE_LINK.txt
-Sunscreen_Comparison_Board*.html
-facewash_canvas_data.js
-facewash_inventory.json
+
+# Internal working spreadsheets with raw data
+*.xlsx

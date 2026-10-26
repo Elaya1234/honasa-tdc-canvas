@@ -15,7 +15,7 @@ SHAMPOO_DIR = os.path.join(BASE_DIR, "PDP_Research_Board", "4 SHAMPOO")
 OUTPUT_HTML = os.path.join(BASE_DIR, "PDP_Competitive_Research_Canvas.html")
 OUTPUT_BAT = os.path.join(BASE_DIR, "Launch_Research_Canvas.bat")
 
-print("Starting Full 4-Category Bright Competitive Research Canvas Generator...")
+print("Starting Product Page Competitive Comparison Generator...")
 
 def process_directory(base_dir, cat_prefix, rel_base_folder):
     if not os.path.exists(base_dir):
@@ -666,7 +666,7 @@ html_template = f'''<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HONASA TDC • 4-Leaf Competitive Research Canvas</title>
+<title>Product Page Competitive Comparison</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -1542,8 +1542,8 @@ body {{
     <span class="win-dot red"></span>
     <span class="win-dot yellow"></span>
     <span class="win-dot green"></span>
-    <span class="chrome-brand-pill">HONASA TDC</span>
-    <span class="chrome-canvas-title">Competitive PDP & Intelligence Board</span>
+    <span class="chrome-brand-pill">HONASA</span>
+    <span class="chrome-canvas-title">Product Page Competitive Comparison</span>
   </div>
 
   <!-- Level 1: 4 Category Tabs (Google Style) -->
@@ -2432,13 +2432,22 @@ window.addEventListener('keydown', (e) => {{
 with open(OUTPUT_HTML, 'w', encoding='utf-8') as f:
     f.write(html_template)
 
-print(f"Successfully generated complete bright 4-category HTML at: {OUTPUT_HTML}")
+print(f"Successfully generated Product Page Competitive Comparison HTML at: {OUTPUT_HTML}")
 print(f"File size: {os.path.getsize(OUTPUT_HTML) / 1024 / 1024:.2f} MB")
 
-# Recreate Launcher batch file
+# Sync to index.html for web hosting
+import shutil
+index_html_path = os.path.join(BASE_DIR, "index.html")
+try:
+    shutil.copyfile(OUTPUT_HTML, index_html_path)
+    print(f"Synced to {index_html_path}")
+except Exception as e:
+    print(f"Warning: Could not sync index.html: {e}")
+
+# Recreate Launcher batch files
 bat_content = f'''@echo off
-title HONASA TDC - Competitive Research Canvas
-echo Opening Competitive Research Canvas in your default browser...
+title Product Page Competitive Comparison
+echo Opening Product Page Competitive Comparison in your default browser...
 start "" "{OUTPUT_HTML}"
 exit
 '''
@@ -2446,5 +2455,9 @@ exit
 with open(OUTPUT_BAT, 'w', encoding='utf-8') as bf:
     bf.write(bat_content)
 
-print("Launcher batch file updated.")
-print("Bright 4-Category Generation Completed Successfully!")
+comp_bat = os.path.join(BASE_DIR, "Launch_Product_Page_Competitive_Comparison.bat")
+with open(comp_bat, 'w', encoding='utf-8') as bf:
+    bf.write(bat_content)
+
+print("Launcher batch files updated.")
+print("Product Page Competitive Comparison Generation Completed Successfully!")
