@@ -15,13 +15,14 @@ echo  [4] Product Page Competitive Comparison       (Visual Dashboard)
 echo  [5] Marketplace Link Auto-Filler              (GSO Excel Verifier)
 echo  [6] Product Page Intelligence Extractor       (Gemini AI Science)
 echo  [7] TDC - IM Performance Tracking Agent         (Port 8504)
+echo  [8] Discussion Intelligence & AudioSuite     (Elaya Narayanan - Port 8510)
 echo.
-echo  [8] Create / Update Desktop Shortcuts for All Tools
-echo  [9] Open HONASA Project Directory in Explorer
+echo  [9] Create / Update Desktop Shortcuts for All Tools
+echo  [10] Open HONASA Project Directory in Explorer
 echo  [0] Exit
 echo.
 echo ======================================================================
-set /p choice="Enter your choice [0-9]: "
+set /p choice="Enter your choice [0-10]: "
 
 if "%choice%"=="1" (
     start "" "Launch_Product_Data_Media_Downloader.bat"
@@ -52,11 +53,15 @@ if "%choice%"=="7" (
     goto menu
 )
 if "%choice%"=="8" (
+    start "" "Launch_AudioCRM.bat"
+    goto menu
+)
+if "%choice%"=="9" (
     powershell -ExecutionPolicy Bypass -File "create_all_shortcuts.ps1"
     pause
     goto menu
 )
-if "%choice%"=="9" (
+if "%choice%"=="10" (
     explorer "C:\Users\elaya.n\Documents\HONASA TDC"
     goto menu
 )

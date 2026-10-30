@@ -10,8 +10,9 @@ Share these links directly with team members to open instantly in any web browse
 
 | Tool Name | What It Does | Live Hosted URL |
 | :--- | :--- | :--- |
-| 🛠️ **Central Tools Hub & Launchpad** | All-in-one directory with status and quick-launch links for all 12 tools | [Open Tools Hub ↗](https://elaya1234.github.io/honasa-tdc-canvas/hub.html) |
-| 📊 **Product Page Competitive Canvas** | 334 scraped listings, dual-image comparator, claims matrices, INCI science | [Open Research Canvas ↗](https://elaya1234.github.io/honasa-tdc-canvas/) |
+| 🎙️ **Discussion Intelligence & AudioSuite** | Dual-engine: Customer AudioCRM & In-Person Meeting Minutes with seamless 10-min chunking (by Elaya Narayanan) | [Open Live App ↗](https://elaya1234.github.io/honasa-tdc-canvas/) |
+| 🛠️ **Central Tools Hub & Launchpad** | All-in-one directory with status and quick-launch links for all tools | [Open Tools Hub ↗](https://elaya1234.github.io/honasa-tdc-canvas/hub.html) |
+| 📊 **Product Page Competitive Canvas** | 334 scraped listings, dual-image comparator, claims matrices, INCI science | [Open Research Canvas ↗](https://elaya1234.github.io/honasa-tdc-canvas/PDP_Competitive_Research_Canvas.html) |
 | ☀️ **Sunscreen Multi-Marketplace Board (v3)** | 10 hero products across 8 platforms (Amazon, Nykaa, Blinkit, Flipkart, D2C) | [Open Sunscreen Board ↗](https://elaya1234.github.io/honasa-tdc-canvas/Sunscreen_Comparison_Board_v3.html) |
 | 🧼 **South KYC — Face Wash Analysis** | Regional consumer demand, cleansing habits & ingredient preferences | [Open Face Wash Report ↗](https://elaya1234.github.io/honasa-tdc-canvas/TDC_South%20KYC%20%20Analysis/TDC_South_KYC_Face_Wash_FINAL_PERMANENT.html) |
 | 🧴 **South KYC — Sunscreen Analysis** | Consumer perception of white cast, aqua gel texture, and daily UV compliance | [Open Sunscreen Report ↗](https://elaya1234.github.io/honasa-tdc-canvas/TDC_South%20KYC%20%20Analysis/TDC_South_KYC_Sunscreen_FINAL_PERMANENT.html) |
@@ -64,6 +65,14 @@ These tools run locally on Windows machines with 1-click `.bat` launchers:
 * **What it does:** Enterprise AI-assisted analytics agent that ingests raw TDC Influencer Marketing trackers across monthly, quarterly, yearly, or custom periods; extracts and verifies Instagram Reel metrics; transcribes verbatim spoken audio scripts (strictly separated from captions); computes 100% deterministic Spend, Views, CPV, and ER% metrics; and generates standardized 45-column TDC workbooks with automated executive summaries, SKU sheets, dynamic formulas (`=SUMIF`, `=COUNTIF`, `=IF`), and independent QA balancing.
 * **Input:** Raw campaign Excel sheets (e.g. `Sept'26 FW & SS.xlsx`, `Aug'26 SS ( HA) IM analysis .xlsx`).
 * **Output:** Standardized multi-tab Excel workbooks matching historical TDC templates, complete with dynamic formulas, QA validation certificates, and reconciliation logs.
+
+### 8. **Discussion Intelligence & AudioCRM Suite (by Elaya Narayanan)**
+* **Live Hosted Web Link:** [https://elaya1234.github.io/honasa-tdc-canvas/](https://elaya1234.github.io/honasa-tdc-canvas/)
+* **Local Launcher:** `Launch_AudioCRM.bat` • `http://localhost:8510`
+* **What it does:** Dual-engine audio intelligence suite featuring:
+  1. **Customer AudioCRM & KYC Engine**: SKU-agnostic intake that auto-generates dynamic schemas from any uploaded CSV/Excel spreadsheet, records calls with live Web Audio API waveform visualizers, processes verbatim transcripts & dynamic Q&A answers in parallel background queues with Google Gemini, supports double-click cell overriding, and exports back to formatted Excel/CSV workbooks.
+  2. **In-Person Meeting Intelligence & Notes**: Continuous hours-long team/board meeting recording with seamless rolling 10-minute auto-chunking (zero audio dropout), master verbatim transcript concatenation, real-time strategic decisions logging, action items matrices with owners & deadlines, meeting library archive, and 1-click Markdown (`.md`), Plain Text (`.txt`), and Print/PDF export.
+* **Architecture:** Dual-mode design — operates 100% standalone directly in modern web browsers on GitHub Pages with SheetJS & Web Audio API, or connects to the local high-concurrency Express/Node.js backend.
 
 ---
 

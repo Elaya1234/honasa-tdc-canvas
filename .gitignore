@@ -40,3 +40,10 @@ LIVE_WEBSITE_LINK.txt
 
 # Internal working spreadsheets with raw data
 *.xlsx
+
+# Node dependencies
+node_modules/
+**/node_modules/
+honasa_audiocrm/node_modules/
+honasa_audiocrm/audio-files/
+

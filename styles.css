@@ -1,0 +1,118 @@
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #090d16;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #1f293d;
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* Sticky Column 1: Call Session Controls */
+.sticky-col {
+  position: sticky;
+  left: 0;
+  z-index: 20;
+  background-color: #0e1626;
+  border-right: 2px solid #1e293b;
+}
+
+tbody tr:hover .sticky-col {
+  background-color: #162033;
+}
+
+/* AI Completion Pulse Animation */
+@keyframes aiPulseGreen {
+  0% {
+    background-color: rgba(16, 185, 129, 0.25);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.row-highlight-completed {
+  animation: aiPulseGreen 2.5s ease-out;
+}
+
+/* AI In-Progress Glow Animation */
+@keyframes aiProcessingPulse {
+  0%, 100% {
+    opacity: 1;
+    border-color: rgba(56, 189, 248, 0.4);
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.15);
+  }
+  50% {
+    opacity: 0.85;
+    border-color: rgba(139, 92, 246, 0.5);
+    box-shadow: 0 0 16px rgba(139, 92, 246, 0.25);
+  }
+}
+
+.ai-processing-pill {
+  animation: aiProcessingPulse 1.8s infinite ease-in-out;
+}
+
+/* Recording Red Blink Animation */
+@keyframes recBlink {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(0.92);
+  }
+}
+
+.rec-dot {
+  animation: recBlink 1.2s infinite ease-in-out;
+}
+
+/* Cell Editable Highlight */
+.editable-cell {
+  position: relative;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.editable-cell:hover {
+  background-color: rgba(30, 41, 59, 0.8) !important;
+  outline: 1px dashed rgba(56, 189, 248, 0.4);
+}
+
+.editable-cell:hover::after {
+  content: '✎ Double-click to edit';
+  position: absolute;
+  bottom: 2px;
+  right: 4px;
+  font-size: 9px;
+  color: #94a3b8;
+  background: rgba(15, 23, 42, 0.85);
+  padding: 1px 4px;
+  border-radius: 3px;
+  pointer-events: none;
+}
+
+/* Cell Override Badge */
+.cell-overridden-badge {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 6px;
+  height: 6px;
+  background-color: #f59e0b;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #f59e0b;
+}
+
+/* Waveform Canvas */
+.waveform-canvas {
+  image-rendering: pixelated;
+}
