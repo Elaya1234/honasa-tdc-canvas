@@ -1,5 +1,308 @@
 [
   {
+    "id": "MEET-1793356398545",
+    "title": "HONASA Derma Co Q4 Strategy & Sunscreen Line Expansion",
+    "category": "Commercial & Quick Commerce",
+    "date": "2026-10-30",
+    "duration": 1200,
+    "status": "completed",
+    "attendees": [
+      "Varun Alagh (CEO)",
+      "Ghazal Alagh (CIO)",
+      "R&D Head Dr. Ananya",
+      "Zomato/Blinkit Category Head"
+    ],
+    "segments": [
+      {
+        "index": 1,
+        "startTime": "00:00",
+        "endTime": "10:00",
+        "duration": 600,
+        "audioPath": "",
+        "transcript": "[Varun Alagh]: Welcome everyone. Let's look at the quarterly performance for The Derma Co sunscreen range, specifically our 1% Hyaluronic Aqua Gel. As you know, consumer demand on Blinkit and Zepto has surged 40% month-on-month.\n[Ghazal Alagh]: Yes, but our customer care team is noticing in the recent KYC calls that users in South India want larger pack sizes. They are currently buying two 50g packs a month. We need to fast-track the 80g SKU launch.\n[Head of R&D]: The stability and SPF 50+ in-vivo verification for the 80g pump format is already complete with CTRI registration. The viscosity and preservative efficacy tests show zero degradation even at 45 degrees Celsius.\n[Quick Commerce Lead]: From the supply chain side, our dark store fill rate in Bangalore and Hyderabad is at 94%. If we launch the 80g variant, we need at least 3 weeks of safety stock in the Bhiwandi and Nelamangala mother hubs.\n[Meeting Note Added]: Initial discussion on sunscreen quick commerce turnaround",
+        "summary": "The executive team reviewed Q3 performance for The Derma Co sunscreen portfolio, identifying strong quick-commerce tailwinds and verified South India consumer demand for larger 80g packaging. R&D confirmed full formulation stability and CTRI SPF certification.",
+        "keyPoints": [
+          "Blinkit & Zepto quick commerce sales up 40% MoM",
+          "Consumer feedback from South KYC strongly demands 80g value format",
+          "R&D completed stability and preservative efficacy verification at 45°C",
+          "Warehouse safety stock required for Bhiwandi and Nelamangala fulfillment centers"
+        ],
+        "decisions": [
+          "Approved immediate commercial production ramp-up for 80g Hyaluronic Sunscreen SKU.",
+          "Allocated initial 30,000 units exclusively to quick-commerce dark stores in Bangalore, Hyderabad, and Delhi NCR."
+        ],
+        "actionItems": [
+          {
+            "task": "Release final packaging artwork with ISO 24444:2019 test seal",
+            "owner": "Brand Design Lead",
+            "deadline": "Friday",
+            "completed": false
+          },
+          {
+            "task": "Coordinate mother hub inventory transfer for 30k units",
+            "owner": "Supply Chain Team",
+            "deadline": "Nov 10",
+            "completed": false
+          }
+        ],
+        "processedAt": "2026-10-30T10:33:18.553Z"
+      },
+      {
+        "index": 2,
+        "startTime": "10:00",
+        "endTime": "20:00",
+        "duration": 600,
+        "audioPath": "",
+        "transcript": "[Head of R&D]: Moving to the next formulation agenda: the tinted matte gel sunscreen prototype. In our internal panel of 45 dermatologists, 88% praised the zero-white-cast finish on FitzPatrick skin types IV and V.\n[Performance Marketing]: That's huge because our customer acquisition cost (CAC) on Meta for sunscreen is currently around ₹240. If we position this as an all-in-one daily primer plus broad-spectrum protection, our blended CAC could drop below ₹180.\n[Ghazal Alagh]: Agreed, but ensure the fragrance-free claim remains strict. Our consumer surveys repeatedly prove that Derma Co loyalists choose us specifically because our actives are gentle on sensitive, acne-prone barriers.\n[Varun Alagh]: Let's ensure the price point stays under ₹599 to maintain volume velocity against international competitors.\n[Meeting Note Added]: Reviewing dermatological clinical trial results",
+        "summary": "R&D presented clinical trial data for the new Tinted Matte Sunscreen prototype, demonstrating 88% approval on deeper Indian skin tones. Marketing confirmed this positioning will substantially reduce customer acquisition costs while maintaining the brand's medical-first credibility.",
+        "keyPoints": [
+          "Tinted prototype tested on 45 dermatologists with 88% positive tolerance",
+          "Blended marketing CAC projected to decline from ₹240 to ₹180",
+          "Strict adherence to 100% fragrance-free formulation standard affirmed",
+          "Target MSRP established under ₹599 for mass-prestige competitiveness"
+        ],
+        "decisions": [
+          "Greenlit 500-consumer blind efficacy trial for the tinted formulation.",
+          "Confirmed target retail price point of ₹549 for the 50g tube."
+        ],
+        "actionItems": [
+          {
+            "task": "Dispatch blind consumer trial kits to dermatological panel",
+            "owner": "Clinical QA Team",
+            "deadline": "Nov 14",
+            "completed": false
+          },
+          {
+            "task": "Draft creative storyboard focusing on primer + SPF dual-benefit",
+            "owner": "Content Studio Lead",
+            "deadline": "Nov 18",
+            "completed": false
+          }
+        ],
+        "processedAt": "2026-10-30T10:33:18.558Z"
+      }
+    ],
+    "masterTranscript": "--- [Segment 1 | 00:00 - 10:00] ---\n\n[Varun Alagh]: Welcome everyone. Let's look at the quarterly performance for The Derma Co sunscreen range, specifically our 1% Hyaluronic Aqua Gel. As you know, consumer demand on Blinkit and Zepto has surged 40% month-on-month.\n[Ghazal Alagh]: Yes, but our customer care team is noticing in the recent KYC calls that users in South India want larger pack sizes. They are currently buying two 50g packs a month. We need to fast-track the 80g SKU launch.\n[Head of R&D]: The stability and SPF 50+ in-vivo verification for the 80g pump format is already complete with CTRI registration. The viscosity and preservative efficacy tests show zero degradation even at 45 degrees Celsius.\n[Quick Commerce Lead]: From the supply chain side, our dark store fill rate in Bangalore and Hyderabad is at 94%. If we launch the 80g variant, we need at least 3 weeks of safety stock in the Bhiwandi and Nelamangala mother hubs.\n[Meeting Note Added]: Initial discussion on sunscreen quick commerce turnaround\n\n--- [Segment 2 | 10:00 - 20:00] ---\n\n[Head of R&D]: Moving to the next formulation agenda: the tinted matte gel sunscreen prototype. In our internal panel of 45 dermatologists, 88% praised the zero-white-cast finish on FitzPatrick skin types IV and V.\n[Performance Marketing]: That's huge because our customer acquisition cost (CAC) on Meta for sunscreen is currently around ₹240. If we position this as an all-in-one daily primer plus broad-spectrum protection, our blended CAC could drop below ₹180.\n[Ghazal Alagh]: Agreed, but ensure the fragrance-free claim remains strict. Our consumer surveys repeatedly prove that Derma Co loyalists choose us specifically because our actives are gentle on sensitive, acne-prone barriers.\n[Varun Alagh]: Let's ensure the price point stays under ₹599 to maintain volume velocity against international competitors.\n[Meeting Note Added]: Reviewing dermatological clinical trial results",
+    "summary": "The meeting addressed critical strategic initiatives for The Derma Co's sunscreen portfolio, focusing on both the expansion of an existing high-demand product and the introduction of an innovative new formulation. Discussions highlighted significant growth opportunities within the quick commerce segment and strategies to enhance market penetration and profitability.\n\nFor the existing 1% Hyaluronic Aqua Gel sunscreen, a substantial 40% month-on-month surge in demand was reported across quick commerce platforms like Blinkit and Zepto. Consumer feedback from South India indicated a strong preference for larger pack sizes, with users frequently purchasing multiple 50g units. The R&D team confirmed the readiness of an 80g pump format, having successfully completed all stability, SPF 50+ in-vivo verification, and CTRI registration, demonstrating robust performance even at elevated temperatures.\n\nThe second key agenda item was the new tinted matte gel sunscreen prototype. Internal dermatologist panel feedback was overwhelmingly positive, with 88% praising its zero-white-cast finish on FitzPatrick skin types IV and V. This breakthrough presents a significant opportunity to reduce customer acquisition costs on Meta, potentially dropping blended CAC below ₹180 by positioning it as an all-in-one daily primer and broad-spectrum protector.\n\nStrategic considerations for the new tinted sunscreen included maintaining a strict fragrance-free claim, which is crucial for Derma Co loyalists with sensitive skin, and ensuring a competitive price point under ₹599 to drive volume velocity against international competitors. The meeting concluded with clear directives for product launch acceleration and strategic marketing alignment.",
+    "keyTopics": [
+      "Expansion of The Derma Co's 1% Hyaluronic Aqua Gel Sunscreen with a new 80g SKU to meet surging quick commerce demand.",
+      "Strategic development and market positioning of a new Tinted Matte Gel Sunscreen, leveraging positive dermatologist feedback and potential for reduced customer acquisition costs."
+    ],
+    "decisions": [
+      "Approved the fast-tracking of the 80g SKU launch for the 1% Hyaluronic Aqua Gel sunscreen to address consumer demand for larger pack sizes.",
+      "Agreed to proceed with the development and launch of the tinted matte gel sunscreen, with a mandate to maintain a strict fragrance-free claim and ensure a competitive price point under ₹599."
+    ],
+    "actionItems": [
+      {
+        "task": "Ensure 3 weeks of safety stock for the 80g 1% Hyaluronic Aqua Gel variant in the Bhiwandi and Nelamangala mother hubs.",
+        "owner": "Quick Commerce Lead",
+        "deadline": "Prior to 80g SKU launch",
+        "completed": false
+      },
+      {
+        "task": "Develop a comprehensive positioning strategy for the new tinted matte gel sunscreen as an all-in-one daily primer plus broad-spectrum protection.",
+        "owner": "Performance Marketing",
+        "deadline": "Q1 FY25 Product Launch Planning",
+        "completed": false
+      },
+      {
+        "task": "Confirm and maintain the strict fragrance-free claim for the tinted matte gel sunscreen formulation throughout product development and marketing.",
+        "owner": "R&D Head / Ghazal Alagh",
+        "deadline": "Ongoing (Product Development Phase)",
+        "completed": false
+      },
+      {
+        "task": "Finalize the pricing strategy for the tinted matte gel sunscreen to ensure it remains under ₹599.",
+        "owner": "Varun Alagh / Commercial Team",
+        "deadline": "Prior to tinted matte gel sunscreen launch",
+        "completed": false
+      }
+    ],
+    "createdAt": "2026-10-30T10:33:18.545Z",
+    "updatedAt": "2026-10-30T10:33:18.563Z"
+  },
+  {
+    "id": "MEET-1793354947057",
+    "title": "HONASA Derma Co Q4 Strategy & Sunscreen Line Expansion",
+    "category": "Commercial & Quick Commerce",
+    "date": "2026-10-30",
+    "duration": 1200,
+    "status": "completed",
+    "attendees": [
+      "Varun Alagh (CEO)",
+      "Ghazal Alagh (CIO)",
+      "R&D Head Dr. Ananya",
+      "Zomato/Blinkit Category Head"
+    ],
+    "segments": [
+      {
+        "index": 1,
+        "startTime": "00:00",
+        "endTime": "10:00",
+        "duration": 600,
+        "audioPath": "",
+        "transcript": "[Varun Alagh]: Welcome everyone. Let's look at the quarterly performance for The Derma Co sunscreen range, specifically our 1% Hyaluronic Aqua Gel. As you know, consumer demand on Blinkit and Zepto has surged 40% month-on-month.\n[Ghazal Alagh]: Yes, but our customer care team is noticing in the recent KYC calls that users in South India want larger pack sizes. They are currently buying two 50g packs a month. We need to fast-track the 80g SKU launch.\n[Head of R&D]: The stability and SPF 50+ in-vivo verification for the 80g pump format is already complete with CTRI registration. The viscosity and preservative efficacy tests show zero degradation even at 45 degrees Celsius.\n[Quick Commerce Lead]: From the supply chain side, our dark store fill rate in Bangalore and Hyderabad is at 94%. If we launch the 80g variant, we need at least 3 weeks of safety stock in the Bhiwandi and Nelamangala mother hubs.\n[Meeting Note Added]: Initial discussion on sunscreen quick commerce turnaround",
+        "summary": "The executive team reviewed Q3 performance for The Derma Co sunscreen portfolio, identifying strong quick-commerce tailwinds and verified South India consumer demand for larger 80g packaging. R&D confirmed full formulation stability and CTRI SPF certification.",
+        "keyPoints": [
+          "Blinkit & Zepto quick commerce sales up 40% MoM",
+          "Consumer feedback from South KYC strongly demands 80g value format",
+          "R&D completed stability and preservative efficacy verification at 45°C",
+          "Warehouse safety stock required for Bhiwandi and Nelamangala fulfillment centers"
+        ],
+        "decisions": [
+          "Approved immediate commercial production ramp-up for 80g Hyaluronic Sunscreen SKU.",
+          "Allocated initial 30,000 units exclusively to quick-commerce dark stores in Bangalore, Hyderabad, and Delhi NCR."
+        ],
+        "actionItems": [
+          {
+            "task": "Release final packaging artwork with ISO 24444:2019 test seal",
+            "owner": "Brand Design Lead",
+            "deadline": "Friday",
+            "completed": false
+          },
+          {
+            "task": "Coordinate mother hub inventory transfer for 30k units",
+            "owner": "Supply Chain Team",
+            "deadline": "Nov 10",
+            "completed": false
+          }
+        ],
+        "processedAt": "2026-10-30T10:09:07.071Z"
+      },
+      {
+        "index": 2,
+        "startTime": "10:00",
+        "endTime": "20:00",
+        "duration": 600,
+        "audioPath": "",
+        "transcript": "[Head of R&D]: Moving to the next formulation agenda: the tinted matte gel sunscreen prototype. In our internal panel of 45 dermatologists, 88% praised the zero-white-cast finish on FitzPatrick skin types IV and V.\n[Performance Marketing]: That's huge because our customer acquisition cost (CAC) on Meta for sunscreen is currently around ₹240. If we position this as an all-in-one daily primer plus broad-spectrum protection, our blended CAC could drop below ₹180.\n[Ghazal Alagh]: Agreed, but ensure the fragrance-free claim remains strict. Our consumer surveys repeatedly prove that Derma Co loyalists choose us specifically because our actives are gentle on sensitive, acne-prone barriers.\n[Varun Alagh]: Let's ensure the price point stays under ₹599 to maintain volume velocity against international competitors.\n[Meeting Note Added]: Reviewing dermatological clinical trial results",
+        "summary": "R&D presented clinical trial data for the new Tinted Matte Sunscreen prototype, demonstrating 88% approval on deeper Indian skin tones. Marketing confirmed this positioning will substantially reduce customer acquisition costs while maintaining the brand's medical-first credibility.",
+        "keyPoints": [
+          "Tinted prototype tested on 45 dermatologists with 88% positive tolerance",
+          "Blended marketing CAC projected to decline from ₹240 to ₹180",
+          "Strict adherence to 100% fragrance-free formulation standard affirmed",
+          "Target MSRP established under ₹599 for mass-prestige competitiveness"
+        ],
+        "decisions": [
+          "Greenlit 500-consumer blind efficacy trial for the tinted formulation.",
+          "Confirmed target retail price point of ₹549 for the 50g tube."
+        ],
+        "actionItems": [
+          {
+            "task": "Dispatch blind consumer trial kits to dermatological panel",
+            "owner": "Clinical QA Team",
+            "deadline": "Nov 14",
+            "completed": false
+          },
+          {
+            "task": "Draft creative storyboard focusing on primer + SPF dual-benefit",
+            "owner": "Content Studio Lead",
+            "deadline": "Nov 18",
+            "completed": false
+          }
+        ],
+        "processedAt": "2026-10-30T10:09:07.084Z"
+      }
+    ],
+    "masterTranscript": "--- [Segment 1 | 00:00 - 10:00] ---\n\n[Varun Alagh]: Welcome everyone. Let's look at the quarterly performance for The Derma Co sunscreen range, specifically our 1% Hyaluronic Aqua Gel. As you know, consumer demand on Blinkit and Zepto has surged 40% month-on-month.\n[Ghazal Alagh]: Yes, but our customer care team is noticing in the recent KYC calls that users in South India want larger pack sizes. They are currently buying two 50g packs a month. We need to fast-track the 80g SKU launch.\n[Head of R&D]: The stability and SPF 50+ in-vivo verification for the 80g pump format is already complete with CTRI registration. The viscosity and preservative efficacy tests show zero degradation even at 45 degrees Celsius.\n[Quick Commerce Lead]: From the supply chain side, our dark store fill rate in Bangalore and Hyderabad is at 94%. If we launch the 80g variant, we need at least 3 weeks of safety stock in the Bhiwandi and Nelamangala mother hubs.\n[Meeting Note Added]: Initial discussion on sunscreen quick commerce turnaround\n\n--- [Segment 2 | 10:00 - 20:00] ---\n\n[Head of R&D]: Moving to the next formulation agenda: the tinted matte gel sunscreen prototype. In our internal panel of 45 dermatologists, 88% praised the zero-white-cast finish on FitzPatrick skin types IV and V.\n[Performance Marketing]: That's huge because our customer acquisition cost (CAC) on Meta for sunscreen is currently around ₹240. If we position this as an all-in-one daily primer plus broad-spectrum protection, our blended CAC could drop below ₹180.\n[Ghazal Alagh]: Agreed, but ensure the fragrance-free claim remains strict. Our consumer surveys repeatedly prove that Derma Co loyalists choose us specifically because our actives are gentle on sensitive, acne-prone barriers.\n[Varun Alagh]: Let's ensure the price point stays under ₹599 to maintain volume velocity against international competitors.\n[Meeting Note Added]: Reviewing dermatological clinical trial results",
+    "summary": "The meeting focused on two critical strategic initiatives for The Derma Co's sunscreen portfolio: optimizing the existing 1% Hyaluronic Aqua Gel range and launching an innovative new tinted matte gel sunscreen. Discussions highlighted significant growth in quick commerce channels and consumer demand for larger pack sizes in South India, prompting a fast-track decision for an 80g SKU.\n\nKey breakthroughs included R&D's confirmation of stability and SPF 50+ efficacy for the 80g pack, alongside a strong positive reception from dermatologists for the new tinted matte gel sunscreen's zero-white-cast finish. This new formulation presents a substantial opportunity to reduce customer acquisition costs by positioning it as an all-in-one primer and broad-spectrum protector.\n\nStrategic alignment was achieved on maintaining core brand values, specifically the fragrance-free claim crucial for Derma Co loyalists with sensitive skin. Furthermore, a competitive pricing strategy was established for the new product to ensure strong market velocity against international competitors. The meeting concluded with clear directives for supply chain readiness and marketing strategy development for both product expansions.",
+    "keyTopics": [
+      "Q4 Performance & Quick Commerce Demand for 1% Hyaluronic Aqua Gel Sunscreen: Noted a 40% month-on-month surge in demand on Blinkit and Zepto, particularly for the 1% Hyaluronic Aqua Gel.",
+      "Expansion to 80g Pack Size for 1% Hyaluronic Aqua Gel Sunscreen: Identified strong consumer demand in South India for larger pack sizes, leading to the decision to fast-track the 80g SKU launch. R&D confirmed stability, SPF 50+ efficacy, and CTRI registration.",
+      "Development of Tinted Matte Gel Sunscreen Prototype: R&D presented a new formulation praised by 88% of dermatologists for its zero-white-cast finish on FitzPatrick skin types IV and V.",
+      "Marketing & Pricing Strategy for New Sunscreen Line: Discussed potential to reduce customer acquisition cost (CAC) by positioning the tinted matte gel sunscreen as an all-in-one primer. Emphasized maintaining a strict fragrance-free claim and a price point under ₹599."
+    ],
+    "decisions": [
+      "Fast-track the launch of the 80g SKU for The Derma Co's 1% Hyaluronic Aqua Gel sunscreen.",
+      "Proceed with the development and market introduction of the tinted matte gel sunscreen prototype, leveraging its zero-white-cast benefit.",
+      "Mandate a strict fragrance-free claim for the new tinted matte gel sunscreen to align with Derma Co's brand promise for sensitive skin.",
+      "Set the target price point for the new tinted matte gel sunscreen under ₹599 to ensure competitive volume velocity."
+    ],
+    "actionItems": [
+      {
+        "task": "Ensure 3 weeks of safety stock for the 80g 1% Hyaluronic Aqua Gel sunscreen in Bhiwandi and Nelamangala mother hubs.",
+        "owner": "Quick Commerce Lead",
+        "deadline": "Prior to 80g SKU launch",
+        "completed": false
+      },
+      {
+        "task": "Develop and finalize the marketing positioning for the tinted matte gel sunscreen as an all-in-one daily primer plus broad-spectrum protection.",
+        "owner": "Performance Marketing / Product Team",
+        "deadline": "Next phase of product launch planning",
+        "completed": false
+      },
+      {
+        "task": "Ensure strict adherence to the fragrance-free claim for the tinted matte gel sunscreen during final formulation and communication.",
+        "owner": "R&D / Product Team",
+        "deadline": "Ongoing, prior to production",
+        "completed": false
+      },
+      {
+        "task": "Finalize the pricing strategy for the tinted matte gel sunscreen to ensure it remains under ₹599.",
+        "owner": "Commercial Team / Varun Alagh",
+        "deadline": "Next phase of product launch planning",
+        "completed": false
+      }
+    ],
+    "createdAt": "2026-10-30T10:09:07.057Z",
+    "updatedAt": "2026-10-30T10:09:07.100Z"
+  },
+  {
+    "id": "MEET-1793354128651",
+    "title": "HONASA Strategic Review — Oct 30, 2026",
+    "category": "Product & Formulation",
+    "date": "2026-10-30",
+    "duration": 23,
+    "status": "completed",
+    "attendees": [
+      "Varun Alagh",
+      "Ghazal Alagh",
+      "Dr. Ananya (R&D)",
+      "Rajesh (Supply Chain)",
+      "Priya (Marketing)"
+    ],
+    "segments": [
+      {
+        "index": 1,
+        "startTime": "00:00",
+        "endTime": "00:23",
+        "duration": 23,
+        "audioPath": "/audio-files/audio-1793354153688-281888555.webm",
+        "transcript": "[Speaker 1]: So basically today we're gonna discuss how to proceed with our next following categories. Uh let's start from sunscreen, face wash, moisturizer. By the following the moisturizer, sunscreen and face wash. We have to look forward how we're gonna plan to position the product in terms of Amazon, in terms of all other marketplaces including our D2C.",
+        "summary": "The initial segment of the meeting focused on outlining the agenda for discussing the strategy for upcoming product categories, specifically sunscreen, face wash, and moisturizer. The primary objective is to determine the product positioning strategy across various sales channels, including Amazon and the direct-to-consumer (D2C) platform.",
+        "keyPoints": [
+          "Discussion initiated on proceeding with next product categories.",
+          "Specific categories highlighted: sunscreen, face wash, and moisturizer.",
+          "Emphasis on planning product positioning strategy for these new categories.",
+          "Key sales channels to consider for positioning include Amazon and D2C platforms."
+        ],
+        "decisions": [],
+        "actionItems": [],
+        "processedAt": "2026-10-30T09:55:59.876Z"
+      }
+    ],
+    "masterTranscript": "--- [Segment 1 | 00:00 - 00:23] ---\n\n[Speaker 1]: So basically today we're gonna discuss how to proceed with our next following categories. Uh let's start from sunscreen, face wash, moisturizer. By the following the moisturizer, sunscreen and face wash. We have to look forward how we're gonna plan to position the product in terms of Amazon, in terms of all other marketplaces including our D2C.",
+    "summary": "The \"HONASA Strategic Review\" meeting, categorized under \"Product & Formulation,\" commenced with an introduction to its strategic agenda. The initial focus was set on determining the future trajectory for several key product categories within the company's portfolio.\n\nSpecifically, the discussion was slated to address how to proceed with the sunscreen, face wash, and moisturizer lines. A critical aspect of this strategic planning involved defining the market positioning for these products.\n\nThe agenda highlighted the necessity of strategizing product placement across all significant sales channels. This includes major e-commerce platforms like Amazon, other diverse online marketplaces, and critically, HONASA's proprietary direct-to-consumer (D2C) platform. The provided transcript segment captures only these introductory remarks and the initial agenda setting, with no subsequent discussions, breakthroughs, or decisions documented within this portion of the meeting.",
+    "keyTopics": [
+      "Strategic Planning for Product Categories: Initial discussion on how to proceed with key product lines including sunscreen, face wash, and moisturizer.",
+      "Market Positioning Strategy: Planning the strategic placement and positioning of products across various sales channels.",
+      "Multi-Channel Distribution Focus: Emphasis on optimizing product presence and strategy for Amazon, other online marketplaces, and the D2C platform."
+    ],
+    "decisions": [
+      "No decisions were recorded in the provided transcript segment."
+    ],
+    "actionItems": [
+      {
+        "task": "No action items were recorded in the provided transcript segment.",
+        "owner": "N/A",
+        "deadline": "N/A",
+        "completed": false
+      }
+    ],
+    "createdAt": "2026-10-30T09:55:28.651Z",
+    "updatedAt": "2026-10-30T09:55:59.989Z"
+  },
+  {
     "id": "MEET-1793353909204",
     "title": "HONASA Derma Co Q4 Strategy & Sunscreen Line Expansion",
     "category": "Commercial & Quick Commerce",
@@ -261,7 +564,7 @@
     "category": "Product & Formulation",
     "date": "2026-10-30",
     "duration": 600,
-    "status": "recording",
+    "status": "completed",
     "attendees": [
       "Varun Alagh",
       "Ghazal Alagh",
@@ -306,28 +609,44 @@
       }
     ],
     "masterTranscript": "--- [Segment 1 | 00:00 - 10:00] ---\n\n[Varun Alagh]: Welcome everyone. Let's look at the quarterly performance for The Derma Co sunscreen range, specifically our 1% Hyaluronic Aqua Gel. As you know, consumer demand on Blinkit and Zepto has surged 40% month-on-month.\n[Ghazal Alagh]: Yes, but our customer care team is noticing in the recent KYC calls that users in South India want larger pack sizes. They are currently buying two 50g packs a month. We need to fast-track the 80g SKU launch.\n[Head of R&D]: The stability and SPF 50+ in-vivo verification for the 80g pump format is already complete with CTRI registration. The viscosity and preservative efficacy tests show zero degradation even at 45 degrees Celsius.\n[Quick Commerce Lead]: From the supply chain side, our dark store fill rate in Bangalore and Hyderabad is at 94%. If we launch the 80g variant, we need at least 3 weeks of safety stock in the Bhiwandi and Nelamangala mother hubs.\n[Meeting Note Added]: Simulated 10-minute team exchange",
-    "summary": "• [00:00-10:00]: The executive team reviewed Q3 performance for The Derma Co sunscreen portfolio, identifying strong quick-commerce tailwinds and verified South India consumer demand for larger 80g packaging. R&D confirmed full formulation stability and CTRI SPF certification.",
-    "keyTopics": [],
+    "summary": "The meeting convened to review the Q4 performance of The Derma Co's 1% Hyaluronic Aqua Gel sunscreen, which has seen a remarkable 40% month-on-month surge in demand through quick commerce platforms like Blinkit and Zepto. This strong performance underscores the product's market acceptance and the growing importance of quick commerce channels.\n\nA critical insight emerged from customer feedback, particularly from South India, indicating a strong consumer preference for larger pack sizes. Users are currently purchasing two 50g packs monthly, highlighting an immediate need for a more convenient and economical option. Consequently, a strategic imperative was identified to fast-track the launch of an 80g SKU to meet this specific market demand and enhance customer satisfaction.\n\nSignificant progress was reported by the R&D team, confirming the complete readiness of the 80g pump format. All necessary verifications, including stability, SPF 50+ in-vivo testing, and CTRI registration, have been successfully completed. Furthermore, viscosity and preservative efficacy tests demonstrated zero degradation even under challenging conditions of 45 degrees Celsius, ensuring product quality and safety.\n\nFrom a supply chain perspective, the quick commerce dark store fill rate in Bangalore and Hyderabad stands at an impressive 94%. To support the successful launch of the 80g variant, the supply chain team emphasized the crucial requirement for establishing a three-week safety stock in the Bhiwandi and Nelamangala mother hubs. This proactive measure will ensure robust inventory management and seamless product availability upon launch.",
+    "keyTopics": [
+      "Q4 Sunscreen Performance & Quick Commerce Demand: Discussion on the 1% Hyaluronic Aqua Gel sunscreen's strong performance, evidenced by a 40% month-on-month demand surge on quick commerce platforms (Blinkit, Zepto).",
+      "Customer Feedback & 80g SKU Requirement: Identification of a key customer need in South India for larger pack sizes, leading to the proposal to fast-track the launch of an 80g SKU to meet this demand.",
+      "R&D Readiness for 80g Pump Format: Confirmation from R&D regarding the complete stability, SPF 50+ in-vivo verification, CTRI registration, and robust preservative efficacy of the 80g pump format, indicating its readiness for production.",
+      "Supply Chain & Logistics for 80g Variant: Assessment of quick commerce supply chain capabilities, noting a 94% dark store fill rate in key regions, and outlining the requirement for a three-week safety stock in Bhiwandi and Nelamangala mother hubs for the 80g variant launch."
+    ],
     "decisions": [
-      "Approved immediate commercial production ramp-up for 80g Hyaluronic Sunscreen SKU.",
-      "Allocated initial 30,000 units exclusively to quick-commerce dark stores in Bangalore, Hyderabad, and Delhi NCR."
+      "Approved the fast-tracking of the 80g SKU launch for the 1% Hyaluronic Aqua Gel sunscreen to address consumer demand for larger pack sizes, particularly in South India."
     ],
     "actionItems": [
       {
-        "task": "Release final packaging artwork with ISO 24444:2019 test seal",
-        "owner": "Brand Design Lead",
-        "deadline": "Friday",
+        "task": "Initiate production and procurement planning for the 80g SKU, leveraging R&D's completed verification.",
+        "owner": "Rajesh (Supply Chain)",
+        "deadline": "To be determined (Urgent)",
         "completed": false
       },
       {
-        "task": "Coordinate mother hub inventory transfer for 30k units",
-        "owner": "Supply Chain Team",
-        "deadline": "Nov 10",
+        "task": "Ensure establishment of a three-week safety stock for the 80g variant in the Bhiwandi and Nelamangala mother hubs.",
+        "owner": "Rajesh (Supply Chain)",
+        "deadline": "Prior to 80g SKU launch",
+        "completed": false
+      },
+      {
+        "task": "Develop and execute a quick commerce launch strategy for the 80g SKU, focusing on high-demand regions like South India.",
+        "owner": "Priya (Marketing)",
+        "deadline": "Aligned with 80g SKU launch",
+        "completed": false
+      },
+      {
+        "task": "Continue monitoring customer feedback, particularly from South India, regarding pack sizes and product satisfaction post-80g SKU launch.",
+        "owner": "Ghazal Alagh / Customer Care Team",
+        "deadline": "Ongoing post-launch",
         "completed": false
       }
     ],
     "createdAt": "2026-10-30T09:36:22.741Z",
-    "updatedAt": "2026-10-30T09:36:22.808Z"
+    "updatedAt": "2026-10-30T09:55:10.078Z"
   },
   {
     "id": "MEET-1793352591147",
