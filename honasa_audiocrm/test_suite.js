@@ -1,5 +1,6 @@
 const http = require('http');
 const fs = require('fs');
+const path = require('path');
 
 function request(options, postData = null) {
   return new Promise((resolve, reject) => {
@@ -186,6 +187,20 @@ async function runComprehensiveTests() {
     });
     assert(txtRes.statusCode === 200, 'Plain Text export returns HTTP 200');
     assert(txtRes.text.includes('DISCUSSION INTELLIGENCE'), 'Text export contains title header');
+
+    // [TEST GROUP 5] IndexedDB Audio Vault & Queue Recovery Engine
+    console.log('\n[TEST GROUP 5] Audio Recording Vault & Auto-Queue Recovery Engine');
+    const indexHtml = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+    const appJs = fs.readFileSync(path.join(__dirname, '../app.js'), 'utf8');
+
+    assert(indexHtml.includes('queue-recovery-banner'), 'Queue Auto-Recovery Banner present in HTML UI');
+    assert(indexHtml.includes('btn-download-drawer-audio'), 'Voice Recording Download (.webm) button present in drawer');
+    assert(indexHtml.includes('forceResolveAllQueuedRows'), '1-Tap "Synthesize All Now" action wired to banner');
+    assert(appJs.includes('saveAudioRecordingToVault'), 'IndexedDB saveAudioRecordingToVault engine active');
+    assert(appJs.includes('getAudioRecordingFromVault'), 'IndexedDB getAudioRecordingFromVault engine active');
+    assert(appJs.includes('syncVaultRecordingsToDataset'), 'Vault-to-Dataset audio rehydration active on boot');
+    assert(appJs.includes('autoRecoverStuckQueueRows'), 'Automatic queue detection and resolution engine active');
+    assert(appJs.includes('ElayaAudioVault'), 'Permanent browser IndexedDB ElayaAudioVault initialized');
 
     console.log('\n====================================================');
     console.log(`RESULTS: ${passed} PASSED, ${failed} FAILED`);

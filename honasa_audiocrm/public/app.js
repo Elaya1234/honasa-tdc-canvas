@@ -64,6 +64,155 @@ document.addEventListener('DOMContentLoaded', () => {
   initPortalMode();
 });
 
+// =====================================================================
+// PERMANENT BROWSER AUDIO RECORDING VAULT (INDEXEDDB)
+// =====================================================================
+const DB_NAME = 'ElayaAudioVault';
+const DB_VERSION = 1;
+const STORE_NAME = 'recordings';
+
+function openAudioVaultDB() {
+  return new Promise((resolve) => {
+    if (!window.indexedDB) {
+      resolve(null);
+      return;
+    }
+    const req = window.indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME, { keyPath: 'rowId' });
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => {
+      console.warn('IndexedDB open error:', req.error);
+      resolve(null);
+    };
+  });
+}
+
+async function saveAudioRecordingToVault(rowId, audioBlob, duration, metadata = {}) {
+  try {
+    const db = await openAudioVaultDB();
+    if (!db || !audioBlob) return;
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+    store.put({
+      rowId,
+      blob: audioBlob,
+      duration: duration || 60,
+      createdAt: new Date().toISOString(),
+      metadata
+    });
+    await new Promise((res, rej) => {
+      tx.oncomplete = res;
+      tx.onerror = rej;
+    });
+    console.log(`[VAULT] Permanently stored voice recording for ${rowId} in browser IndexedDB.`);
+  } catch (err) {
+    console.warn('[VAULT] Could not save audio to IndexedDB:', err);
+  }
+}
+
+async function getAudioRecordingFromVault(rowId) {
+  try {
+    const db = await openAudioVaultDB();
+    if (!db) return null;
+    const tx = db.transaction(STORE_NAME, 'readonly');
+    const store = tx.objectStore(STORE_NAME);
+    const req = store.get(rowId);
+    return new Promise((res) => {
+      req.onsuccess = () => res(req.result || null);
+      req.onerror = () => res(null);
+    });
+  } catch (err) {
+    return null;
+  }
+}
+
+async function syncVaultRecordingsToDataset() {
+  try {
+    const db = await openAudioVaultDB();
+    if (!db || !dataset || !dataset.rows) return;
+    const tx = db.transaction(STORE_NAME, 'readonly');
+    const store = tx.objectStore(STORE_NAME);
+    const req = store.getAll();
+    req.onsuccess = () => {
+      const allRecordings = req.result || [];
+      let updated = false;
+      allRecordings.forEach(rec => {
+        const row = dataset.rows.find(r => r._id === rec.rowId);
+        if (row && rec.blob && !row._audioUrl) {
+          try {
+            row._audioUrl = URL.createObjectURL(rec.blob);
+            row._audioDuration = rec.duration || row._audioDuration || 60;
+            updated = true;
+          } catch (e) {}
+        }
+      });
+      if (updated) renderGrid();
+    };
+  } catch (e) {}
+}
+
+// =====================================================================
+// AUTOMATIC QUEUE RECOVERY ENGINE (PREVENTS HANGING ON QUEUED ROWS)
+// =====================================================================
+function checkAndDisplayQueueBanner() {
+  const banner = document.getElementById('queue-recovery-banner');
+  const bannerText = document.getElementById('queue-recovery-text');
+  if (!banner || !dataset || !dataset.rows) return;
+
+  const queuedRows = dataset.rows.filter(r => ['queued', 'transcribing', 'synthesizing'].includes(r._status));
+  if (queuedRows.length > 0) {
+    banner.classList.remove('hidden');
+    if (bannerText) {
+      bannerText.innerText = `${queuedRows.length} call session(s) in AI queue. Voice recordings are safely preserved in browser vault.`;
+    }
+  } else {
+    banner.classList.add('hidden');
+  }
+}
+
+function autoRecoverStuckQueueRows() {
+  if (!dataset || !dataset.rows) return;
+  checkAndDisplayQueueBanner();
+
+  const queuedRows = dataset.rows.filter(r => ['queued', 'transcribing', 'synthesizing'].includes(r._status));
+  if (queuedRows.length > 0) {
+    console.log(`[AUTO-RECOVER] Found ${queuedRows.length} row(s) in queue. Automatically synthesizing insights...`);
+    showToast(`⚡ Automatically processing ${queuedRows.length} queued call recording(s)...`, 'info');
+
+    queuedRows.forEach((row, idx) => {
+      setTimeout(async () => {
+        const vaultItem = await getAudioRecordingFromVault(row._id);
+        const audioBlob = vaultItem ? vaultItem.blob : null;
+        const duration = vaultItem ? vaultItem.duration : (row._callDuration || 140);
+        processRowWithClientWorker(row._id, audioBlob, duration, row._transcript || '');
+      }, idx * 600);
+    });
+  }
+}
+
+function forceResolveAllQueuedRows() {
+  if (!dataset || !dataset.rows) return;
+  const queuedRows = dataset.rows.filter(r => ['queued', 'transcribing', 'synthesizing'].includes(r._status));
+  if (queuedRows.length === 0) {
+    showToast('No queued calls to synthesize.', 'info');
+    return;
+  }
+  showToast(`⚡ Synthesizing all ${queuedRows.length} queued calls with AI...`, 'info');
+  queuedRows.forEach((row, idx) => {
+    setTimeout(async () => {
+      const vaultItem = await getAudioRecordingFromVault(row._id);
+      const audioBlob = vaultItem ? vaultItem.blob : null;
+      const duration = vaultItem ? vaultItem.duration : (row._callDuration || 140);
+      processRowWithClientWorker(row._id, audioBlob, duration, row._transcript || '');
+    }, idx * 400);
+  });
+}
+
 // Fetch current dataset from server
 async function fetchInitialDataset() {
   // Check local storage first
@@ -75,6 +224,8 @@ async function fetchInitialDataset() {
         dataset = parsed;
         updateStatsUI();
         renderGrid();
+        syncVaultRecordingsToDataset();
+        autoRecoverStuckQueueRows();
         if (IS_STANDALONE) return;
       }
     } catch (e) {}
@@ -90,6 +241,8 @@ async function fetchInitialDataset() {
       if (data.queue) queueStats = data.queue;
       updateStatsUI();
       renderGrid();
+      syncVaultRecordingsToDataset();
+      autoRecoverStuckQueueRows();
       return;
     }
   } catch (err) {
@@ -104,6 +257,8 @@ async function fetchInitialDataset() {
       dataset = ds2;
       updateStatsUI();
       renderGrid();
+      syncVaultRecordingsToDataset();
+      autoRecoverStuckQueueRows();
     }
   } catch (e) {
     console.error('Initial dataset could not be loaded:', e);
@@ -450,9 +605,13 @@ function renderSessionCellContent(row) {
 
   if (row._status === 'queued') {
     return `
-      <div class="ai-processing-pill inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/30">
-        <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-400 animate-spin"></i>
-        <span>In AI Queue...</span>
+      <div class="flex items-center gap-1.5">
+        <button onclick="processRowWithClientWorker('${row._id}')" 
+                class="ai-processing-pill inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 transition cursor-pointer shadow-sm"
+                title="Tap to synthesize AI responses now">
+          <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-400 animate-spin"></i>
+          <span>In AI Queue (Tap to AI)</span>
+        </button>
       </div>
     `;
   }
@@ -859,8 +1018,25 @@ async function stopAndQueueRecording(rowId) {
 
     // Immediately set row status to queued and unlock UI
     if (row) row._status = 'queued';
+
+    // Immediately persist raw audio blob into browser IndexedDB Vault so it's NEVER lost
+    if (audioBlob) {
+      const custName = (row && (row['Customer Name'] || row['Name'] || row['Customer_Name'])) || `Customer ${rowId}`;
+      try {
+        await saveAudioRecordingToVault(rowId, audioBlob, totalDuration, { customerName: custName, transcript: capturedLiveTranscript });
+        if (row) {
+          row._audioUrl = URL.createObjectURL(audioBlob);
+          row._audioDuration = totalDuration;
+        }
+      } catch (e) {
+        console.warn('[VAULT] Could not persist audio recording to IndexedDB:', e);
+      }
+    }
+
+    saveDatasetToActiveProfile();
     renderGrid();
-    showToast(`✓ Call recording finished! Shifted to background AI queue.`, 'info');
+    checkAndDisplayQueueBanner();
+    showToast(`✓ Call recording saved safely in Vault & queued for AI!`, 'info');
 
     // Trigger asynchronous background processing
     await dispatchRowAudioProcessing(rowId, audioBlob, totalDuration, capturedLiveTranscript);
@@ -966,6 +1142,20 @@ async function processRowWithClientWorker(rowId, audioBlob, durationSec, liveTra
   const row = dataset.rows.find(r => r._id === rowId);
   if (!row) return;
 
+  // If no audioBlob was supplied directly (e.g. from page reload recovery), retrieve from Vault if available
+  if (!audioBlob && typeof getAudioRecordingFromVault === 'function') {
+    try {
+      const vaultItem = await getAudioRecordingFromVault(rowId);
+      if (vaultItem && vaultItem.blob) {
+        audioBlob = vaultItem.blob;
+        if (!durationSec && vaultItem.duration) durationSec = vaultItem.duration;
+        if (!liveTranscript && vaultItem.metadata && vaultItem.metadata.transcript) {
+          liveTranscript = vaultItem.metadata.transcript;
+        }
+      }
+    } catch (e) {}
+  }
+
   const customerName = row.Customer_Name || row.Consumer_Name || row.Participant_Name || row[dataset.baseColumns[0]] || `Customer #${rowId}`;
   const city = row.City || row.Region || row.State || 'India';
   const sku = row.Product_SKU || row.Product_Variant || 'Sunscreen SPF 50';
@@ -1053,6 +1243,7 @@ async function processRowWithClientWorker(rowId, audioBlob, durationSec, liveTra
   updateStatsUI();
   saveDatasetToActiveProfile();
   renderGrid();
+  checkAndDisplayQueueBanner();
 
   showToast(`✓ Call for ${customerName} processed & KYC insights filled by AI!`, 'success');
 }
@@ -1132,7 +1323,14 @@ function setupRowAudioInput() {
 
     row._status = 'queued';
     renderGrid();
+    checkAndDisplayQueueBanner();
     showToast(`Uploading audio for ${row[dataset.baseColumns[0]] || 'Customer'}...`, 'info');
+
+    if (typeof saveAudioRecordingToVault === 'function') {
+      try {
+        await saveAudioRecordingToVault(rowId, file, 120, { customerName: row[dataset.baseColumns[0]] || 'Customer' });
+      } catch (e) {}
+    }
 
     let submitted = false;
     if (!IS_STANDALONE) {
@@ -1303,17 +1501,71 @@ function openTranscriptDrawer(rowId) {
     'bg-sky-500/10 text-sky-400 border-sky-500/20'
   }`;
 
-  // Audio Player
+  // Audio Player & Vault Download
   const audioContainer = document.getElementById('drawer-audio-container');
   const audioElement = document.getElementById('drawer-audio-element');
   const durationEl = document.getElementById('drawer-audio-duration');
+  const btnDownloadAudio = document.getElementById('btn-download-drawer-audio');
+
+  const setupDrawerAudio = (audioSrc, blobData = null) => {
+    if (!audioContainer) return;
+    audioContainer.classList.remove('hidden');
+    if (audioElement) audioElement.src = audioSrc;
+    if (durationEl) durationEl.innerText = `${row._audioDuration || 60}s duration`;
+    if (btnDownloadAudio) {
+      btnDownloadAudio.onclick = async () => {
+        try {
+          let downloadBlob = blobData;
+          if (!downloadBlob && typeof getAudioRecordingFromVault === 'function') {
+            const vaultItem = await getAudioRecordingFromVault(rowId);
+            if (vaultItem && vaultItem.blob) downloadBlob = vaultItem.blob;
+          }
+          if (downloadBlob) {
+            const url = URL.createObjectURL(downloadBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            const safeName = (customerName || 'customer').replace(/[^a-zA-Z0-9_-]/g, '_');
+            a.download = `VoiceRecording_${safeName}_Row${rowId}.webm`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showToast(`✓ Voice recording downloaded: ${a.download}`, 'success');
+          } else if (audioSrc) {
+            const a = document.createElement('a');
+            a.href = audioSrc;
+            a.download = `VoiceRecording_Row${rowId}.webm`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showToast(`✓ Voice recording downloaded!`, 'success');
+          } else {
+            showToast('Voice recording audio is not available.', 'warning');
+          }
+        } catch (err) {
+          console.error('[DRAWER] Audio download failed:', err);
+          showToast('Failed to download voice recording.', 'error');
+        }
+      };
+    }
+  };
 
   if (row._audioUrl) {
-    audioContainer.classList.remove('hidden');
-    audioElement.src = row._audioUrl;
-    durationEl.innerText = `${row._audioDuration || 60}s duration`;
+    setupDrawerAudio(row._audioUrl);
+  } else if (typeof getAudioRecordingFromVault === 'function') {
+    getAudioRecordingFromVault(rowId).then(vaultItem => {
+      if (vaultItem && vaultItem.blob) {
+        const blobUrl = URL.createObjectURL(vaultItem.blob);
+        row._audioUrl = blobUrl;
+        if (vaultItem.duration) row._audioDuration = vaultItem.duration;
+        setupDrawerAudio(blobUrl, vaultItem.blob);
+      } else {
+        if (audioContainer) audioContainer.classList.add('hidden');
+      }
+    }).catch(() => {
+      if (audioContainer) audioContainer.classList.add('hidden');
+    });
   } else {
-    audioContainer.classList.add('hidden');
+    if (audioContainer) audioContainer.classList.add('hidden');
   }
 
   // Summary
@@ -2173,6 +2425,15 @@ function loadUserDataset(username) {
         renderMeetingsList();
       }
     } catch (e) {}
+  }
+
+  // Restore audio recordings from Vault and auto-recover any stuck rows for this user
+  if (typeof syncVaultRecordingsToDataset === 'function') {
+    syncVaultRecordingsToDataset().then(() => {
+      if (typeof autoRecoverStuckQueueRows === 'function') {
+        autoRecoverStuckQueueRows();
+      }
+    });
   }
 }
 
