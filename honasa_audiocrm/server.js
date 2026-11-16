@@ -358,6 +358,7 @@ class BackgroundTaskQueue {
         rowId: job.rowId,
         jobId: job.id,
         updatedRow: row,
+        row: row,
         stats: this.getStats()
       });
 
@@ -809,7 +810,15 @@ app.post('/api/settings', (req, res) => {
 app.get('/api/settings', (req, res) => {
   res.json({
     hasApiKey: !!process.env.GEMINI_API_KEY,
-    keyMasked: process.env.GEMINI_API_KEY ? `...${process.env.GEMINI_API_KEY.slice(-6)}` : 'None'
+    keyMasked: process.env.GEMINI_API_KEY ? `...${process.env.GEMINI_API_KEY.slice(-6)}` : 'None',
+    apiKey: process.env.GEMINI_API_KEY || ''
+  });
+});
+
+app.get('/api/config', (req, res) => {
+  res.json({
+    hasApiKey: !!process.env.GEMINI_API_KEY,
+    geminiKey: process.env.GEMINI_API_KEY || ''
   });
 });
 
