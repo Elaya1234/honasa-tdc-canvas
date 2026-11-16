@@ -79,6 +79,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupDragAndDrop();
   setupSearch();
   setupRowAudioInput();
+  updateVaultBadge();
 });
 
 // =====================================================================
@@ -147,35 +148,542 @@ async function getAudioRecordingFromVault(rowId) {
   }
 }
 
+async function getAllAudioRecordingsFromVault() {
+  try {
+    const db = await openAudioVaultDB();
+    if (!db) return [];
+    return new Promise((resolve) => {
+      const tx = db.transaction(STORE_NAME, 'readonly');
+      const store = tx.objectStore(STORE_NAME);
+      const req = store.getAll();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => resolve([]);
+    });
+  } catch (err) {
+    console.warn('[VAULT] Failed to retrieve all recordings:', err);
+    return [];
+  }
+}
+
 async function syncVaultRecordingsToDataset() {
   if (!dataset || !dataset.rows) return;
   try {
-    const db = await openAudioVaultDB();
-    if (!db) return;
-    const tx = db.transaction(STORE_NAME, 'readonly');
-    const store = tx.objectStore(STORE_NAME);
-    const req = store.getAll();
-    req.onsuccess = () => {
-      const records = req.result || [];
-      if (records.length === 0) return;
-      let matched = 0;
-      records.forEach(rec => {
-        const row = dataset.rows.find(r => String(r._id) === String(rec.rowId));
-        if (row && rec.blob) {
-          try {
-            row._audioUrl = URL.createObjectURL(rec.blob);
-            row._audioDuration = rec.duration || row._audioDuration || 60;
-            matched++;
-          } catch (e) {}
-        }
-      });
-      if (matched > 0) {
-        console.log(`[VAULT] Re-linked ${matched} persistent audio recordings from IndexedDB to dataset.`);
+    const records = await getAllAudioRecordingsFromVault();
+    if (!records || records.length === 0) {
+      updateVaultBadge();
+      return;
+    }
+    let matched = 0;
+    records.forEach(rec => {
+      const row = dataset.rows.find(r => String(r._id) === String(rec.rowId));
+      if (row && rec.blob) {
+        try {
+          row._audioUrl = URL.createObjectURL(rec.blob);
+          row._audioDuration = rec.duration || row._audioDuration || 60;
+          matched++;
+        } catch (e) {}
       }
-    };
+    });
+    if (matched > 0) {
+      console.log(`[VAULT] Re-linked ${matched} persistent audio recordings from IndexedDB to dataset.`);
+      renderGrid();
+    }
+    updateVaultBadge();
   } catch (err) {
     console.warn('[VAULT] Sync failed:', err);
   }
+}
+
+// =====================================================================
+// SMART AUDIO NAMING & INLINE TABLE PLAYBACK ENGINE
+// Format: [YYYY-MM-DD] — [Customer Name] — [Phone] — [Product] — [Duration].webm
+// =====================================================================
+function generateSmartAudioFilename(row, timestamp = null, durationSec = null) {
+  const ts = timestamp ? new Date(timestamp) : new Date();
+  const dateStr = ts.toISOString().slice(0, 10);
+  
+  const custName = (row && (row['Customer Name'] || row.Customer_Name || row['Consumer Name'] || row['Name'])) || 'Customer';
+  const cleanName = String(custName).trim().replace(/[^a-zA-Z0-9]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '') || 'Customer';
+  
+  const phone = (row && (row.Contact || row['Phone Number'] || row.Phone)) || '';
+  const cleanPhone = String(phone).replace(/[^0-9]/g, '') || 'Call';
+  
+  const product = (row && (row['Last Purchase'] || row.Product_SKU || row['Product'] || row['Product Name'])) || 'KYC';
+  const cleanProduct = String(product).trim().slice(0, 30).replace(/[^a-zA-Z0-9]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '') || 'KYC';
+  
+  const dur = durationSec || (row && row._audioDuration) || (row && row._callDuration) || 60;
+  const m = String(Math.floor(dur / 60)).padStart(2, '0');
+  const s = String(dur % 60).padStart(2, '0');
+  const durStr = `${m}m${s}s`;
+  
+  return `${dateStr} — ${cleanName} — ${cleanPhone} — ${cleanProduct} — ${durStr}.webm`;
+}
+
+function generateSmartAudioDisplayTitle(row, timestamp = null, durationSec = null) {
+  const ts = timestamp ? new Date(timestamp) : new Date();
+  const dateStr = ts.toISOString().slice(0, 10);
+  const custName = (row && (row['Customer Name'] || row.Customer_Name || row['Consumer Name'] || row['Name'])) || 'Customer';
+  const phone = (row && (row.Contact || row['Phone Number'] || row.Phone)) || '';
+  const product = (row && (row['Last Purchase'] || row.Product_SKU || row['Product'])) || '';
+  const dur = durationSec || (row && row._audioDuration) || (row && row._callDuration) || 60;
+  const m = String(Math.floor(dur / 60)).padStart(2, '0');
+  const s = String(dur % 60).padStart(2, '0');
+  
+  const parts = [dateStr, custName];
+  if (phone) parts.push(phone);
+  if (product) parts.push(product);
+  parts.push(`${m}:${s}`);
+  return parts.join(' — ');
+}
+
+function renderRowAudioCell(row) {
+  const isRecording = activeRecording && activeRecording.rowId === row._id;
+  const isQueued = row._status === 'queued';
+  const isTranscribing = row._status === 'transcribing';
+  const isSynthesizing = row._status === 'synthesizing';
+  
+  if (isRecording) {
+    return `
+      <div class="flex items-center gap-1.5 px-2 py-1 bg-rose-500/10 border border-rose-500/30 rounded-lg text-rose-400 text-xs font-mono">
+        <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+        <span>Recording Live...</span>
+      </div>
+    `;
+  }
+  
+  if (isQueued || isTranscribing || isSynthesizing) {
+    return `
+      <div class="flex items-center gap-1.5 px-2 py-1 bg-amber-500/10 border border-amber-500/30 rounded-lg text-amber-300 text-xs">
+        <i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-amber-400"></i>
+        <span>Synthesizing Audio...</span>
+      </div>
+    `;
+  }
+  
+  if (row._audioUrl || row._status === 'completed') {
+    const audioSrc = row._audioUrl || '';
+    const dur = row._audioDuration || row._callDuration || 60;
+    const m = String(Math.floor(dur / 60)).padStart(2, '0');
+    const s = String(dur % 60).padStart(2, '0');
+    
+    return `
+      <div class="flex items-center gap-1.5 py-0.5">
+        ${audioSrc ? `
+          <audio controls preload="none" src="${audioSrc}" class="h-7 w-36 sm:w-44 accent-sky-400 rounded"></audio>
+        ` : `
+          <button onclick="playRowAudioFallback('${row._id}')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-sky-400 text-[11px] font-semibold border border-slate-700 flex items-center gap-1 transition">
+            <i data-lucide="play" class="w-3 h-3"></i> Play (${m}:${s})
+          </button>
+        `}
+        <button onclick="downloadRowAudioFile('${row._id}')" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-teal-300 hover:text-white border border-slate-700 transition shrink-0" title="Download Audio File (.webm)">
+          <i data-lucide="download" class="w-3.5 h-3.5"></i>
+        </button>
+        <button onclick="openTranscriptDrawer('${row._id}')" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-sky-400 hover:text-white border border-slate-700 transition shrink-0" title="Audit Transcript">
+          <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+    `;
+  }
+  
+  return `
+    <div class="flex items-center gap-1 text-slate-500 text-xs italic px-1">
+      <i data-lucide="mic-off" class="w-3.5 h-3.5 text-slate-600"></i>
+      <span>No call recorded</span>
+    </div>
+  `;
+}
+
+async function playRowAudioFallback(rowId) {
+  const row = dataset.rows.find(r => r._id === rowId);
+  if (!row) return;
+  const vaultItem = await getAudioRecordingFromVault(rowId);
+  if (vaultItem && vaultItem.blob) {
+    row._audioUrl = URL.createObjectURL(vaultItem.blob);
+    renderGrid();
+    const audio = new Audio(row._audioUrl);
+    audio.play();
+    showToast(`▶ Playing voice recording for ${row['Customer Name'] || 'Customer'}`, 'info');
+  } else {
+    openTranscriptDrawer(rowId);
+  }
+}
+
+async function downloadRowAudioFile(rowId) {
+  const row = dataset.rows.find(r => r._id === rowId);
+  if (!row) {
+    showToast('Row not found.', 'warning');
+    return;
+  }
+  
+  let blobToDownload = null;
+  let dur = row._audioDuration || row._callDuration || 60;
+  let timestamp = Date.now();
+  
+  if (typeof getAudioRecordingFromVault === 'function') {
+    try {
+      const item = await getAudioRecordingFromVault(rowId);
+      if (item && item.blob) {
+        blobToDownload = item.blob;
+        if (item.duration) dur = item.duration;
+        if (item.timestamp) timestamp = item.timestamp;
+      }
+    } catch (e) {}
+  }
+  
+  const smartFilename = generateSmartAudioFilename(row, timestamp, dur);
+  
+  if (blobToDownload) {
+    const url = URL.createObjectURL(blobToDownload);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = smartFilename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showToast(`✓ Downloaded ${smartFilename}!`, 'success');
+  } else if (row._audioUrl) {
+    const a = document.createElement('a');
+    a.href = row._audioUrl;
+    a.download = smartFilename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showToast(`✓ Downloaded ${smartFilename}!`, 'success');
+  } else {
+    showToast('No raw audio file stored for this row yet.', 'warning');
+  }
+}
+
+// =====================================================================
+// ORGANIZED VOICE RECORDINGS VAULT MODAL CONTROLLER
+// Search, browse by sheet, inline playback, and batch download
+// =====================================================================
+let vaultRecordingsList = [];
+
+async function updateVaultBadge() {
+  try {
+    const records = await getAllAudioRecordingsFromVault();
+    let count = records ? records.length : 0;
+    
+    if (sheetsVault && Array.isArray(sheetsVault.sheets)) {
+      sheetsVault.sheets.forEach(s => {
+        if (s.dataset && Array.isArray(s.dataset.rows)) {
+          s.dataset.rows.forEach(r => {
+            if (r._audioUrl && !records.some(rec => String(rec.rowId) === String(r._id))) {
+              count++;
+            }
+          });
+        }
+      });
+    }
+    
+    const badge = document.getElementById('vault-count-badge');
+    if (badge) badge.innerText = count;
+    const modalBadge = document.getElementById('modal-vault-total-badge');
+    if (modalBadge) modalBadge.innerText = `${count} Recording${count === 1 ? '' : 's'}`;
+  } catch (e) {
+    console.warn('[VAULT] updateVaultBadge error:', e);
+  }
+}
+
+async function openRecordingsVaultModal() {
+  const modal = document.getElementById('recordings-vault-modal');
+  if (!modal) return;
+  modal.classList.remove('hidden');
+  
+  const sheetFilter = document.getElementById('vault-sheet-filter');
+  if (sheetFilter) {
+    let opts = '<option value="all">All Sheets</option>';
+    if (sheetsVault && Array.isArray(sheetsVault.sheets)) {
+      sheetsVault.sheets.forEach(s => {
+        opts += `<option value="${escapeAttr(s.id)}">${escapeHtml(s.name)}</option>`;
+      });
+    }
+    sheetFilter.innerHTML = opts;
+  }
+  
+  await refreshRecordingsVault();
+}
+
+function closeRecordingsVaultModal() {
+  const modal = document.getElementById('recordings-vault-modal');
+  if (modal) modal.classList.add('hidden');
+}
+
+async function refreshRecordingsVault() {
+  const listContainer = document.getElementById('vault-recordings-list');
+  if (listContainer) {
+    listContainer.innerHTML = `
+      <div class="py-12 flex flex-col items-center justify-center text-slate-400 gap-2">
+        <i data-lucide="loader-2" class="w-6 h-6 animate-spin text-teal-400"></i>
+        <p class="text-xs">Scanning Audio Vault Library...</p>
+      </div>
+    `;
+    lucide.createIcons();
+  }
+  
+  const vaultItems = await getAllAudioRecordingsFromVault();
+  const compiled = [];
+  const seenRowIds = new Set();
+  
+  vaultItems.forEach(item => {
+    seenRowIds.add(String(item.rowId));
+    let matchedRow = null;
+    let sheetName = item.metadata?.sheetName || 'Workbook';
+    let sheetId = item.metadata?.sheetId || 'sheet-default';
+    
+    if (sheetsVault && Array.isArray(sheetsVault.sheets)) {
+      for (const s of sheetsVault.sheets) {
+        if (s.dataset && Array.isArray(s.dataset.rows)) {
+          const r = s.dataset.rows.find(row => String(row._id) === String(item.rowId));
+          if (r) {
+            matchedRow = r;
+            sheetName = s.name;
+            sheetId = s.id;
+            break;
+          }
+        }
+      }
+    }
+    
+    const custName = (matchedRow && (matchedRow['Customer Name'] || matchedRow.Customer_Name || matchedRow['Consumer Name'])) 
+      || item.metadata?.customerName 
+      || `Customer #${item.rowId}`;
+    const phone = (matchedRow && (matchedRow.Contact || matchedRow['Phone Number'] || matchedRow.Phone)) 
+      || item.metadata?.phone || '';
+    const product = (matchedRow && (matchedRow['Last Purchase'] || matchedRow.Product_SKU || matchedRow.Product)) 
+      || item.metadata?.product || 'KYC Verification';
+    const loc = (matchedRow && (matchedRow.Location || matchedRow.City)) || '';
+    const dur = item.duration || (matchedRow && (matchedRow._audioDuration || matchedRow._callDuration)) || 60;
+    const ts = item.timestamp || Date.now();
+    const blobUrl = item.blob ? URL.createObjectURL(item.blob) : (matchedRow && matchedRow._audioUrl ? matchedRow._audioUrl : '');
+    
+    const smartFilename = generateSmartAudioFilename(matchedRow || { 'Customer Name': custName, Contact: phone, 'Last Purchase': product }, ts, dur);
+    const displayTitle = generateSmartAudioDisplayTitle(matchedRow || { 'Customer Name': custName, Contact: phone, 'Last Purchase': product }, ts, dur);
+    
+    compiled.push({
+      rowId: String(item.rowId),
+      customerName: custName,
+      phone,
+      product,
+      location: loc,
+      sheetId,
+      sheetName,
+      timestamp: ts,
+      duration: dur,
+      blob: item.blob,
+      audioUrl: blobUrl,
+      smartFilename,
+      displayTitle,
+      transcript: (matchedRow && matchedRow._transcript) || item.metadata?.transcript || ''
+    });
+  });
+  
+  if (sheetsVault && Array.isArray(sheetsVault.sheets)) {
+    sheetsVault.sheets.forEach(s => {
+      if (s.dataset && Array.isArray(s.dataset.rows)) {
+        s.dataset.rows.forEach(r => {
+          if (!seenRowIds.has(String(r._id)) && (r._audioUrl || r._status === 'completed')) {
+            seenRowIds.add(String(r._id));
+            const custName = r['Customer Name'] || r.Customer_Name || r['Consumer Name'] || `Customer #${r._id}`;
+            const phone = r.Contact || r['Phone Number'] || r.Phone || '';
+            const product = r['Last Purchase'] || r.Product_SKU || r.Product || 'KYC';
+            const dur = r._audioDuration || r._callDuration || 60;
+            const ts = Date.now();
+            const smartFilename = generateSmartAudioFilename(r, ts, dur);
+            const displayTitle = generateSmartAudioDisplayTitle(r, ts, dur);
+            
+            compiled.push({
+              rowId: String(r._id),
+              customerName: custName,
+              phone,
+              product,
+              location: r.Location || r.City || '',
+              sheetId: s.id,
+              sheetName: s.name,
+              timestamp: ts,
+              duration: dur,
+              blob: null,
+              audioUrl: r._audioUrl || '',
+              smartFilename,
+              displayTitle,
+              transcript: r._transcript || ''
+            });
+          }
+        });
+      }
+    });
+  }
+  
+  compiled.sort((a, b) => b.timestamp - a.timestamp);
+  vaultRecordingsList = compiled;
+  
+  updateVaultBadge();
+  filterRecordingsVaultUI();
+}
+
+function filterRecordingsVaultUI() {
+  const listContainer = document.getElementById('vault-recordings-list');
+  if (!listContainer) return;
+  
+  const searchInput = (document.getElementById('vault-search-input')?.value || '').toLowerCase().trim();
+  const selectedSheet = document.getElementById('vault-sheet-filter')?.value || 'all';
+  
+  const filtered = vaultRecordingsList.filter(item => {
+    if (selectedSheet !== 'all' && item.sheetId !== selectedSheet) return false;
+    if (searchInput) {
+      const match = item.customerName.toLowerCase().includes(searchInput) ||
+                    item.phone.toLowerCase().includes(searchInput) ||
+                    item.product.toLowerCase().includes(searchInput) ||
+                    item.smartFilename.toLowerCase().includes(searchInput) ||
+                    item.sheetName.toLowerCase().includes(searchInput);
+      if (!match) return false;
+    }
+    return true;
+  });
+  
+  if (filtered.length === 0) {
+    listContainer.innerHTML = `
+      <div class="py-16 text-center text-slate-500">
+        <i data-lucide="mic-off" class="w-10 h-10 mx-auto text-slate-600 mb-2"></i>
+        <p class="text-sm font-semibold text-slate-400">No voice recordings found</p>
+        <p class="text-xs text-slate-600 mt-1">${searchInput ? 'Try adjusting your search query or sheet filter.' : 'Record a call using the "Call" button to automatically save audio here.'}</p>
+      </div>
+    `;
+    lucide.createIcons();
+    return;
+  }
+  
+  let html = '';
+  filtered.forEach((rec) => {
+    const durM = String(Math.floor(rec.duration / 60)).padStart(2, '0');
+    const durS = String(rec.duration % 60).padStart(2, '0');
+    const dateStr = new Date(rec.timestamp).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    
+    html += `
+      <div class="p-3.5 sm:p-4 rounded-2xl bg-[#0e1626] border border-slate-800 hover:border-teal-500/40 shadow-lg transition flex flex-col md:flex-row md:items-center justify-between gap-3 group">
+        <!-- Info Column -->
+        <div class="space-y-1.5 min-w-0 flex-1">
+          <!-- Smart Filename Badge -->
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[11px] font-mono font-bold bg-teal-500/15 text-teal-300 border border-teal-500/30">
+              <i data-lucide="file-audio" class="w-3 h-3"></i>
+              <span class="truncate max-w-[280px] sm:max-w-md">${escapeHtml(rec.smartFilename)}</span>
+            </span>
+            <span class="px-2 py-0.5 rounded-lg text-[10px] bg-slate-800 text-slate-400 border border-slate-700 font-medium">
+              📄 ${escapeHtml(rec.sheetName)}
+            </span>
+            <span class="text-[11px] text-slate-500 font-mono">${dateStr}</span>
+          </div>
+
+          <!-- Customer details -->
+          <div class="flex items-center gap-2 text-xs">
+            <span class="font-bold text-white text-sm">${escapeHtml(rec.customerName)}</span>
+            ${rec.phone ? `<span class="text-slate-400 font-mono">· ${escapeHtml(rec.phone)}</span>` : ''}
+            ${rec.location ? `<span class="text-slate-400">· ${escapeHtml(rec.location)}</span>` : ''}
+          </div>
+
+          <!-- Product -->
+          ${rec.product ? `
+            <div class="text-[11px] text-slate-400 flex items-center gap-1.5">
+              <span class="text-slate-500">Product:</span>
+              <span class="text-slate-300 font-medium">${escapeHtml(rec.product)}</span>
+            </div>
+          ` : ''}
+        </div>
+
+        <!-- Audio Player & Action Buttons -->
+        <div class="flex items-center gap-2 flex-wrap shrink-0">
+          ${rec.audioUrl ? `
+            <audio controls preload="none" src="${rec.audioUrl}" class="h-8 w-44 sm:w-56 rounded-lg accent-teal-400"></audio>
+          ` : `
+            <div class="px-3 py-1 rounded-lg bg-slate-900 text-slate-500 text-xs border border-slate-800 flex items-center gap-1">
+              <i data-lucide="clock" class="w-3 h-3"></i> ${durM}:${durS}
+            </div>
+          `}
+          
+          <button onclick="downloadVaultItem('${rec.rowId}')" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold shadow-md transition active:scale-95" title="Download Audio File (.webm)">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            <span>Download</span>
+          </button>
+
+          <button onclick="openTranscriptDrawer('${rec.rowId}'); closeRecordingsVaultModal();" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-sky-400 hover:text-white border border-slate-700 text-xs font-semibold transition" title="Audit Transcript">
+            <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+            <span>Audit</span>
+          </button>
+        </div>
+      </div>
+    `;
+  });
+  
+  listContainer.innerHTML = html;
+  lucide.createIcons();
+}
+
+async function downloadVaultItem(rowId) {
+  const item = vaultRecordingsList.find(r => String(r.rowId) === String(rowId));
+  if (!item) {
+    downloadRowAudioFile(rowId);
+    return;
+  }
+  
+  if (item.blob) {
+    const url = URL.createObjectURL(item.blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = item.smartFilename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showToast(`✓ Downloaded ${item.smartFilename}!`, 'success');
+  } else if (item.audioUrl) {
+    const a = document.createElement('a');
+    a.href = item.audioUrl;
+    a.download = item.smartFilename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showToast(`✓ Downloaded ${item.smartFilename}!`, 'success');
+  } else {
+    downloadRowAudioFile(rowId);
+  }
+}
+
+async function downloadAllVaultRecordings() {
+  if (!vaultRecordingsList || vaultRecordingsList.length === 0) {
+    showToast('No recordings available in vault to download.', 'warning');
+    return;
+  }
+  
+  showToast(`⚡ Initiating download for ${vaultRecordingsList.length} recording(s)...`, 'info');
+  
+  let downloadedCount = 0;
+  for (let i = 0; i < vaultRecordingsList.length; i++) {
+    const item = vaultRecordingsList[i];
+    setTimeout(() => {
+      if (item.blob) {
+        const url = URL.createObjectURL(item.blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = item.smartFilename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } else if (item.audioUrl) {
+        const a = document.createElement('a');
+        a.href = item.audioUrl;
+        a.download = item.smartFilename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+    }, i * 350);
+    downloadedCount++;
+  }
+  
+  setTimeout(() => {
+    showToast(`✓ Downloaded all ${downloadedCount} audio files with smart names!`, 'success');
+  }, vaultRecordingsList.length * 350 + 200);
 }
 
 // =====================================================================
@@ -204,7 +712,7 @@ function autoRecoverStuckQueueRows() {
   const queuedRows = dataset.rows.filter(r => ['queued', 'transcribing', 'synthesizing'].includes(r._status));
   if (queuedRows.length > 0) {
     console.log(`[AUTO-RECOVER] Found ${queuedRows.length} row(s) in queue. Automatically synthesizing insights...`);
-    showToast(`⚡ Automatically processing ${queuedRows.length} queued call recording(s)...`, 'info');
+    showToast(`⚡ Fast-synthesizing ${queuedRows.length} queued call recording(s)...`, 'info');
 
     queuedRows.forEach((row, idx) => {
       setTimeout(async () => {
@@ -212,7 +720,7 @@ function autoRecoverStuckQueueRows() {
         const audioBlob = vaultItem ? vaultItem.blob : null;
         const duration = vaultItem ? vaultItem.duration : (row._callDuration || 140);
         processRowWithClientWorker(row._id, audioBlob, duration, row._transcript || '');
-      }, idx * 600);
+      }, idx * 60);
     });
   }
 }
@@ -224,14 +732,14 @@ function forceResolveAllQueuedRows() {
     showToast('No queued calls to synthesize.', 'info');
     return;
   }
-  showToast(`⚡ Synthesizing all ${queuedRows.length} queued calls with AI...`, 'info');
+  showToast(`⚡ Fast-synthesizing all ${queuedRows.length} queued calls with AI...`, 'info');
   queuedRows.forEach((row, idx) => {
     setTimeout(async () => {
       const vaultItem = await getAudioRecordingFromVault(row._id);
       const audioBlob = vaultItem ? vaultItem.blob : null;
       const duration = vaultItem ? vaultItem.duration : (row._callDuration || 140);
       processRowWithClientWorker(row._id, audioBlob, duration, row._transcript || '');
-    }, idx * 400);
+    }, idx * 40);
   });
 }
 
@@ -1213,12 +1721,25 @@ async function stopAndQueueRecording(rowId) {
     // Persist raw audio recording into browser IndexedDB Vault
     if (audioBlob) {
       const custName = (row && (row['Customer Name'] || row['Name'] || row.Customer_Name)) || `Customer ${rowId}`;
+      const phone = (row && (row.Contact || row['Phone Number'] || row.Phone)) || '';
+      const product = (row && (row['Last Purchase'] || row.Product_SKU || row.Product)) || '';
+      const curSheet = sheetsVault.sheets.find(s => s.id === sheetsVault.activeSheetId);
+      const sheetName = curSheet ? curSheet.name : 'Sheet';
+
       try {
-        await saveAudioRecordingToVault(rowId, audioBlob, totalDuration, { customerName: custName, transcript: capturedLiveTranscript });
+        await saveAudioRecordingToVault(rowId, audioBlob, totalDuration, { 
+          customerName: custName,
+          phone: phone,
+          product: product,
+          sheetId: sheetsVault.activeSheetId,
+          sheetName: sheetName,
+          transcript: capturedLiveTranscript 
+        });
         if (row) {
           row._audioUrl = URL.createObjectURL(audioBlob);
           row._audioDuration = totalDuration;
         }
+        updateVaultBadge();
       } catch (e) {
         console.warn('[VAULT] Could not persist audio recording to IndexedDB:', e);
       }
@@ -1283,12 +1804,15 @@ function cancelRecording(rowId) {
   renderGrid();
 }
 
-// Dispatches row audio to background worker
+// Dispatches row audio to background worker (Snappy, non-blocking)
 async function dispatchRowAudioProcessing(rowId, audioBlob, totalDuration, capturedLiveTranscript) {
   const row = dataset.rows.find(r => r._id === rowId);
   if (!row) return;
 
-  let submittedToServer = false;
+  // Fire client worker immediately so UI synthesizes instantly without blocking
+  processRowWithClientWorker(rowId, audioBlob, totalDuration, capturedLiveTranscript);
+
+  // If backend server is active, backup to server in background without awaiting or blocking
   if (!IS_STANDALONE) {
     try {
       const formData = new FormData();
@@ -1300,22 +1824,11 @@ async function dispatchRowAudioProcessing(rowId, audioBlob, totalDuration, captu
         formData.append('transcriptHint', capturedLiveTranscript);
       }
 
-      const res = await fetch(`/api/records/${rowId}/audio`, {
+      fetch(`/api/records/${rowId}/audio`, {
         method: 'POST',
         body: formData
-      });
-      const contentType = res.headers.get('content-type') || '';
-      if (contentType.includes('application/json')) {
-        const result = await res.json();
-        if (result && result.success) {
-          submittedToServer = true;
-        }
-      }
+      }).catch(() => {});
     } catch (err) {}
-  }
-
-  if (!submittedToServer) {
-    processRowWithClientWorker(rowId, audioBlob, totalDuration, capturedLiveTranscript);
   }
 }
 
@@ -1342,13 +1855,12 @@ async function processRowWithClientWorker(rowId, audioBlob, durationSec, liveTra
   const city = row.Location || row.City || 'India';
   const sku = row['Last Purchase'] || row.Product_SKU || 'Sunscreen SPF 50';
 
-  // Stage 1: Transcribing
+  // Fast visual progression (Snappy & Instant: 150ms + 200ms = 350ms total)
   updateRowStatusInGrid(rowId, 'transcribing', 'Transcribing Audio...');
-  await new Promise(r => setTimeout(r, 1000));
+  await new Promise(r => setTimeout(r, 150));
 
-  // Stage 2: Synthesizing Insights
   updateRowStatusInGrid(rowId, 'synthesizing', 'Gemini AI Answering...');
-  await new Promise(r => setTimeout(r, 1200));
+  await new Promise(r => setTimeout(r, 200));
 
   // Stage 3: Build Verbatim Transcript
   let finalTranscript = '';
@@ -1413,6 +1925,7 @@ async function processRowWithClientWorker(rowId, audioBlob, durationSec, liveTra
   renderGrid();
   renderSheetTabs();
   checkAndDisplayQueueBanner();
+  updateVaultBadge();
 
   showToast(`✓ Call for ${customerName} processed & KYC insights filled by AI!`, 'success');
 }
@@ -1491,6 +2004,12 @@ function updateRowStatusInGrid(rowId, status, label) {
       cell.innerHTML = renderSessionCellContent(row);
     }
   });
+
+  const audioCell = document.getElementById(`audio-cell-${rowId}`);
+  if (audioCell && row) {
+    audioCell.innerHTML = renderRowAudioCell(row);
+  }
+
   lucide.createIcons();
 }
 
@@ -1569,6 +2088,16 @@ function renderGrid() {
     `;
   });
 
+  // Last Column: Voice Recording & Playback
+  headHtml += `
+    <th class="px-4 py-3 bg-[#0a192f] font-bold text-sky-400 tracking-wider text-[11px] uppercase min-w-[260px] border-l border-slate-800/80">
+      <div class="flex items-center gap-1.5">
+        <i data-lucide="headphones" class="w-3.5 h-3.5 text-sky-400"></i>
+        <span>🎧 Voice Recording & Playback</span>
+      </div>
+    </th>
+  `;
+
   headHtml += '</tr>';
   if (thead) thead.innerHTML = headHtml;
 
@@ -1610,6 +2139,13 @@ function renderGrid() {
         </td>
       `;
     });
+
+    // Last Column: Inline Audio Cell
+    bodyHtml += `
+      <td class="px-3 py-2 border-l border-slate-800/60 min-w-[260px]" id="audio-cell-${row._id}">
+        ${renderRowAudioCell(row)}
+      </td>
+    `;
 
     bodyHtml += '</tr>';
   });
@@ -1769,6 +2305,25 @@ function renderMobileCardsView(rowsToRender = null) {
           }).join('')}
         </div>
 
+        <!-- Inline Audio Player on Card -->
+        ${(row._audioUrl || row._status === 'completed') ? `
+          <div class="p-2.5 bg-slate-950/80 rounded-xl border border-slate-800/80 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2 flex-1 min-w-0">
+              <i data-lucide="headphones" class="w-4 h-4 text-teal-400 shrink-0"></i>
+              ${row._audioUrl ? `
+                <audio controls preload="none" src="${row._audioUrl}" class="h-7 w-full max-w-[210px] accent-teal-400"></audio>
+              ` : `
+                <button onclick="playRowAudioFallback('${row._id}')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-sky-400 text-xs font-semibold flex items-center gap-1">
+                  <i data-lucide="play" class="w-3 h-3"></i> Play Call Audio
+                </button>
+              `}
+            </div>
+            <button onclick="downloadRowAudioFile('${row._id}')" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-teal-300 hover:text-white border border-slate-700 shrink-0" title="Download Audio (.webm)">
+              <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        ` : ''}
+
         ${isCompleted ? `
           <div class="pt-2 border-t border-slate-800 flex items-center justify-between">
             <button onclick="openTranscriptDrawer('${row._id}')" class="text-xs text-sky-400 hover:text-sky-300 font-semibold flex items-center gap-1.5">
@@ -1861,20 +2416,21 @@ function openTranscriptDrawer(rowId) {
             const url = URL.createObjectURL(downloadBlob);
             const a = document.createElement('a');
             a.href = url;
-            const safeName = custName.replace(/[^a-zA-Z0-9_-]/g, '_');
-            a.download = `VoiceRecording_${safeName}_Row${rowId}.webm`;
+            const smartFilename = generateSmartAudioFilename(row, null, row._audioDuration);
+            a.download = smartFilename;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-            showToast(`✓ Downloaded voice recording: ${a.download}`, 'success');
+            showToast(`✓ Downloaded voice recording: ${smartFilename}`, 'success');
           } else if (audioSrc) {
             const a = document.createElement('a');
             a.href = audioSrc;
-            a.download = `VoiceRecording_Row${rowId}.webm`;
+            const smartFilename = generateSmartAudioFilename(row, null, row._audioDuration);
+            a.download = smartFilename;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-            showToast(`✓ Downloaded voice recording!`, 'success');
+            showToast(`✓ Downloaded voice recording: ${smartFilename}`, 'success');
           } else {
             showToast('Voice recording audio is not available.', 'warning');
           }

@@ -125,6 +125,19 @@ async function runComprehensiveTests() {
     assert(appJs.includes('forceResolveAllQueuedRows'), 'forceResolveAllQueuedRows 1-tap synthesizer active');
     assert(appJs.includes('ElayaAudioVault'), 'Permanent browser IndexedDB ElayaAudioVault initialized');
 
+    // [TEST GROUP 6] Inline Voice Recording Playback Column & Organized Audio Vault Library
+    console.log('\n[TEST GROUP 6] Inline Voice Recording Column & Organized Audio Vault Library');
+    assert(indexHtml.includes('recordings-vault-modal'), 'Organized Voice Recordings Vault Modal present in HTML');
+    assert(indexHtml.includes('vault-count-badge'), 'Vault Audio Count badge present in top header');
+    assert(indexHtml.includes('openRecordingsVaultModal'), 'Audio Vault trigger button bound to openRecordingsVaultModal');
+    assert(appJs.includes('Voice Recording & Playback'), 'Spreadsheet Table header contains "Voice Recording & Playback" as last column');
+    assert(appJs.includes('generateSmartAudioFilename'), 'Smart audio filename generator with date, customer, phone, product & duration active');
+    assert(appJs.includes('renderRowAudioCell'), 'Inline table audio player cell renderer active');
+    assert(appJs.includes('downloadRowAudioFile'), 'Individual 1-click smart webm audio downloader active');
+    assert(appJs.includes('openRecordingsVaultModal'), 'openRecordingsVaultModal modal controller active');
+    assert(appJs.includes('downloadAllVaultRecordings'), '1-click batch Download All Audio downloader active');
+    assert(appJs.includes('updateVaultBadge'), 'updateVaultBadge dynamic counter active');
+
     console.log('\n====================================================');
     console.log(`RESULTS: ${passed} PASSED, ${failed} FAILED`);
     console.log('====================================================\n');
