@@ -1,6 +1,15 @@
 /* =================================================================== */
-/* ELAYA NARAYANAN — DISCUSSION INTELLIGENCE & AUDIOCRM SUITE STYLES   */
+/* ELAYA NARAYANAN — DYNAMIC AUDIOCRM & KYC SHEETS STYLES              */
 /* =================================================================== */
+
+/* Google Sheets Tab Bar Styling */
+.sheet-tab {
+  transition: all 0.15s ease-in-out;
+}
+
+.sheet-tab:hover {
+  background-color: #141d30;
+}
 
 /* Custom Scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
