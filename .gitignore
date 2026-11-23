@@ -46,4 +46,5 @@ node_modules/
 **/node_modules/
 honasa_audiocrm/node_modules/
 honasa_audiocrm/audio-files/
+*.zip
 

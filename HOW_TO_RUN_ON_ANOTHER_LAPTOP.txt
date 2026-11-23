@@ -1,0 +1,33 @@
+======================================================================
+  HONASA KYC CALLING & AUDIOCRM SUITE — RUNNING ON ANOTHER LAPTOP
+======================================================================
+
+QUICK START (3 STEPS):
+
+1. INSTALL NODE.JS (If not already installed)
+   - Download the free installer from: https://nodejs.org/
+   - Choose the "LTS" version (e.g. Node 20 or Node 22).
+   - Run the installer and click "Next" until finished.
+
+2. RUN THE APPLICATION
+   - Double-click "Start_KYC_Calling.bat".
+   - The launcher will automatically:
+     * Check if Node.js is ready.
+     * Check and configure the Gemini API key (.env).
+     * Verify all packages are ready (or auto-install with npm).
+     * Launch the local server on http://localhost:8510.
+     * Open the web app in your default browser (Chrome / Edge).
+
+3. START CALLING & ANALYZING
+   - You can start calling customers, recording conversations, or uploading Excel sheets.
+   - The AI analysis runs in the background.
+   - All Excel sheets and audio recordings are saved locally inside this folder.
+
+----------------------------------------------------------------------
+INSTANT BROWSER-ONLY ALTERNATIVE (No Node.js Required):
+----------------------------------------------------------------------
+If you want to view or test the tool without installing Node.js at all,
+simply open this link in Chrome or Edge:
+https://elaya1234.github.io/honasa-tdc-canvas/
+
+======================================================================
