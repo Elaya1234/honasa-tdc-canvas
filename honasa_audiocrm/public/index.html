@@ -290,9 +290,9 @@
         <!-- Populated dynamically by app.js -->
       </div>
 
-      <!-- View 2: Horizontal Scrollable Spreadsheet Table -->
-      <div class="hidden flex-1 overflow-auto custom-scrollbar" id="table-scroll-container">
-        <table class="w-full text-left text-xs border-collapse" id="crm-table">
+      <!-- View 2: Horizontal Scrollable Spreadsheet Table with Freeze Panes -->
+      <div class="hidden flex-1 overflow-auto custom-scrollbar relative" id="table-scroll-container">
+        <table class="w-full text-left text-xs border-separate border-spacing-0" id="crm-table">
           <thead class="sticky top-0 z-30 bg-[#0e1626] border-b border-slate-800 shadow-md" id="table-head"></thead>
           <tbody class="divide-y divide-slate-800/60 font-sans" id="table-body"></tbody>
         </table>

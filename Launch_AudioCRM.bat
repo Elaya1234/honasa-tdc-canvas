@@ -1,11 +1,11 @@
 @echo off
 setlocal enabledelayedexpansion
-title HONASA KYC Calling & AudioCRM Suite (http://localhost:8510)
+title "HONASA KYC Calling and AudioCRM Suite"
 color 0B
 
 echo ======================================================================
-echo    HONASA DISCUSSION INTELLIGENCE & KYC CALLING SUITE
-echo    Dynamic AudioCRM, Multi-Sheet Workbook & Gemini AI Analysis
+echo    HONASA DISCUSSION INTELLIGENCE AND KYC CALLING SUITE
+echo    Dynamic AudioCRM, Multi-Sheet Workbook and Gemini AI Analysis
 echo ======================================================================
 echo.
 
@@ -31,16 +31,14 @@ if %errorlevel% neq 0 (
     echo.
     echo Node.js is required to run the local server and background AI processing.
     echo ----------------------------------------------------------------------
-    echo Step 1: Download Node.js (free ^& safe) from: https://nodejs.org/
-    echo Step 2: Choose the "LTS" (Recommended) version and install with default settings.
+    echo Step 1: Download Node.js LTS from: https://nodejs.org/
+    echo Step 2: Choose the LTS version and install with default settings.
     echo Step 3: Once installed, double-click this batch file again!
     echo ----------------------------------------------------------------------
     echo.
     echo Alternatively, you can use the cloud version right now in your browser:
     echo https://elaya1234.github.io/honasa-tdc-canvas/
     echo.
-    set /p OPEN_WEB="Would you like to open the browser version now? (Y/N): "
-    if /i "!OPEN_WEB!"=="Y" start https://elaya1234.github.io/honasa-tdc-canvas/
     pause
     exit /b 1
 )
@@ -50,16 +48,13 @@ if not exist "%APP_DIR%\.env" (
     if exist "%~dp0.env" (
         copy "%~dp0.env" "%APP_DIR%\.env" >nul
         echo [INFO] Restored .env configuration from parent directory.
-    ) else (
-        powershell -NoProfile -Command "[System.IO.File]::WriteAllText('%APP_DIR%\.env', 'GEMINI_API_KEY=' + [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('QVEuQWI4Uk42TEJpcnJLZXE4R25JeUtrVEVabEdaM1ItWHlKbGJpWTc0STFYOWZxYk5Lb0E=')) + [Environment]::NewLine)" >nul 2>&1
-        echo [INFO] Initialized .env with default Gemini API key.
     )
 )
 
 :: 4. Check if node_modules exists, auto-install if missing
 if not exist "%APP_DIR%\node_modules" (
-    echo [SETUP] First-time setup detected: Installing required Node.js packages...
-    echo [SETUP] Running 'npm install' (this takes 10-20 seconds)...
+    echo [SETUP] First-time setup detected: Installing required Node.js packages.
+    echo [SETUP] Running npm install. Please wait a few moments.
     echo.
     call npm install
     if %errorlevel% neq 0 (
@@ -78,13 +73,13 @@ netstat -ano | findstr 8510 | findstr LISTENING >nul
 if %errorlevel% equ 0 (
     echo [INFO] AudioCRM Server is already running on http://localhost:8510.
     echo [INFO] Opening KYC Calling app in your default browser...
-    start http://localhost:8510
+    start "" http://localhost:8510
     timeout /t 2 >nul
     exit /b 0
 )
 
 :: 6. Launch server and open browser
-echo [INFO] Starting local server at http://localhost:8510 ...
+echo [INFO] Starting local server at http://localhost:8510
 echo [INFO] Server Port: 8510
 echo [INFO] Local Web: http://localhost:8510
 echo [NOTE] Keep this window open or minimized while using the CRM.

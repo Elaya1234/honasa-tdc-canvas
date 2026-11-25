@@ -2600,17 +2600,21 @@ function renderGrid() {
     return true;
   });
 
-  // 1. Render Table Headers
+  // 1. Render Table Headers (Top Row Freezes Vertically, Leading Columns Freeze Horizontally)
   let headHtml = `
     <tr>
-      <th class="sticky-col px-4 py-3 bg-[#0e1626] font-bold text-slate-300 tracking-wider text-[11px] uppercase min-w-[210px]">
+      <th class="freeze-col-1 px-3 py-3 font-bold text-slate-300 tracking-wider text-[11px] uppercase">
         Call Session
       </th>
   `;
 
-  dataset.baseColumns.forEach(col => {
+  dataset.baseColumns.forEach((col, idx) => {
+    let freezeClass = '';
+    if (idx === 0) freezeClass = 'freeze-col-2';
+    else if (idx === 1) freezeClass = 'freeze-col-3';
+
     headHtml += `
-      <th class="px-4 py-3 bg-[#0e1626] font-bold text-slate-300 tracking-wider text-[11px] uppercase border-r border-slate-800/80 whitespace-nowrap">
+      <th class="${freezeClass} px-3 py-3 font-bold text-slate-300 tracking-wider text-[11px] uppercase border-r border-slate-800/80 whitespace-nowrap">
         ${escapeHtml(col)}
       </th>
     `;
@@ -2618,7 +2622,7 @@ function renderGrid() {
 
   dataset.insightColumns.forEach(col => {
     headHtml += `
-      <th class="px-4 py-3 bg-[#0d1e2e] font-bold text-teal-400 tracking-wider text-[11px] uppercase border-r border-slate-800/80 whitespace-nowrap">
+      <th class="th-insight px-4 py-3 font-bold text-teal-400 tracking-wider text-[11px] uppercase border-r border-slate-800/80 whitespace-nowrap">
         <div class="flex items-center gap-1.5">
           <i data-lucide="sparkles" class="w-3 h-3 text-teal-400"></i>
           <span>${escapeHtml(col)}</span>
@@ -2629,7 +2633,7 @@ function renderGrid() {
 
   // Last Column: Voice Recording & Playback
   headHtml += `
-    <th class="px-4 py-3 bg-[#0a192f] font-bold text-sky-400 tracking-wider text-[11px] uppercase min-w-[260px] border-l border-slate-800/80">
+    <th class="th-audio px-4 py-3 font-bold text-sky-400 tracking-wider text-[11px] uppercase min-w-[260px] border-l border-slate-800/80">
       <div class="flex items-center gap-1.5">
         <i data-lucide="headphones" class="w-3.5 h-3.5 text-sky-400"></i>
         <span>🎧 Voice Recording & Playback</span>
@@ -2640,7 +2644,7 @@ function renderGrid() {
   headHtml += '</tr>';
   if (thead) thead.innerHTML = headHtml;
 
-  // 2. Render Table Body Rows
+  // 2. Render Table Body Rows (Leading Columns Stay Pinned on Horizontal Scroll)
   let bodyHtml = '';
   filteredRows.forEach(row => {
     const isCompleted = row._status === 'completed';
@@ -2648,15 +2652,19 @@ function renderGrid() {
 
     bodyHtml += `
       <tr class="hover:bg-[#111c30] transition duration-150 ${isCompleted ? 'bg-slate-900/40' : ''}" id="row-${row._id}">
-        <td class="sticky-col px-3 py-2.5 bg-[#0e1626] session-cell-${row._id}" id="session-cell-${row._id}">
+        <td class="freeze-col-1 px-3 py-2.5 session-cell-${row._id}" id="session-cell-${row._id}">
           ${renderSessionCellContent(row)}
         </td>
     `;
 
-    dataset.baseColumns.forEach(col => {
+    dataset.baseColumns.forEach((col, idx) => {
       const val = row[col] || '';
+      let freezeClass = '';
+      if (idx === 0) freezeClass = 'freeze-col-2';
+      else if (idx === 1) freezeClass = 'freeze-col-3';
+
       bodyHtml += `
-        <td class="px-4 py-2.5 text-slate-300 border-r border-slate-800/60 whitespace-nowrap editable-cell" 
+        <td class="${freezeClass} px-3 py-2.5 text-slate-300 border-r border-slate-800/60 whitespace-nowrap editable-cell" 
             ondblclick="handleCellDblClick('${row._id}', '${escapeAttr(col)}')">
           ${escapeHtml(val)}
         </td>

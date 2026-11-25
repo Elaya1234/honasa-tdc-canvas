@@ -27,17 +27,108 @@
   background: #334155;
 }
 
-/* Sticky Column 1: Call Session Controls (Spreadsheet Table View) */
-.sticky-col {
-  position: sticky;
-  left: 0;
-  z-index: 20;
-  background-color: #0e1626;
-  border-right: 2px solid #1e293b;
+/* =================================================================== */
+/* SPREADSHEET FREEZE PANES (STICKY HEADERS & STICKY LEADING COLUMNS)  */
+/* =================================================================== */
+
+/* Table must use border-separate for 100% reliable sticky headers & columns */
+#crm-table {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
 }
 
-tbody tr:hover .sticky-col {
-  background-color: #162033;
+/* 1. TOP HEADER ROW FREEZE: All <th> elements remain pinned to the top when scrolling down */
+#crm-table thead th {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 25 !important;
+  background-color: #0e1626 !important;
+  border-bottom: 2px solid #1e293b !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+#crm-table thead th.th-insight {
+  background-color: #0d1e2e !important;
+}
+
+#crm-table thead th.th-audio {
+  background-color: #0a192f !important;
+}
+
+/* 2. LEFT COLUMNS FREEZE: Pinned to the left when scrolling right */
+
+/* Frozen Column 1: Call Session controls */
+.freeze-col-1,
+.sticky-col {
+  position: sticky !important;
+  left: 0 !important;
+  min-width: 155px !important;
+  max-width: 155px !important;
+  width: 155px !important;
+  background-color: #0e1626 !important;
+  border-right: 1px solid #1e293b !important;
+}
+
+/* Frozen Column 2: Serial Number # (Hashtag) */
+.freeze-col-2 {
+  position: sticky !important;
+  left: 155px !important;
+  min-width: 50px !important;
+  max-width: 50px !important;
+  width: 50px !important;
+  background-color: #0e1626 !important;
+  border-right: 1px solid #1e293b !important;
+  text-align: center !important;
+}
+
+/* Frozen Column 3: Customer Name */
+.freeze-col-3 {
+  position: sticky !important;
+  left: 205px !important;
+  min-width: 165px !important;
+  max-width: 165px !important;
+  width: 165px !important;
+  background-color: #0e1626 !important;
+  border-right: 2px solid rgba(56, 189, 248, 0.4) !important;
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* 3. Z-INDEX HIERARCHY */
+/* Corner cells (Top-left intersection: thead + freeze columns) float above everything */
+#crm-table thead th.freeze-col-1,
+#crm-table thead th.freeze-col-2,
+#crm-table thead th.freeze-col-3,
+#crm-table thead th.sticky-col {
+  z-index: 35 !important;
+}
+
+/* Body frozen columns float above horizontally scrolling body cells */
+#crm-table tbody td.freeze-col-1,
+#crm-table tbody td.freeze-col-2,
+#crm-table tbody td.freeze-col-3,
+#crm-table tbody td.sticky-col {
+  z-index: 15 !important;
+  background-color: #0e1626 !important;
+}
+
+/* Keep background opaque on hover so scrolling cells under them remain hidden */
+#crm-table tbody tr:hover td.freeze-col-1,
+#crm-table tbody tr:hover td.freeze-col-2,
+#crm-table tbody tr:hover td.freeze-col-3,
+#crm-table tbody tr:hover td.sticky-col {
+  background-color: #131d30 !important;
+}
+
+#crm-table tbody tr.bg-slate-900\/40 td.freeze-col-1,
+#crm-table tbody tr.bg-slate-900\/40 td.freeze-col-2,
+#crm-table tbody tr.bg-slate-900\/40 td.freeze-col-3,
+#crm-table tbody tr.bg-slate-900\/40 td.sticky-col {
+  background-color: #0f1828 !important;
+}
+
+/* Borders between cells when using border-separate */
+#crm-table tbody td {
+  border-bottom: 1px solid rgba(30, 41, 59, 0.6);
 }
 
 /* AI Completion Pulse Animation */
